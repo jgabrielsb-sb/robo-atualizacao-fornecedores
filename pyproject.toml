@@ -1,5 +1,5 @@
 [project]
-name = "robo_atualizacao_fornecedores"
+name = "app"
 readme = "README.md"
 version = "0.0.1"
 authors = [
@@ -21,6 +21,7 @@ dependencies = [
     "sqlalchemy>=2.0.49",
     "python-dotenv>=1.1.0",
     "schedule>=1.2.0",
+    "pytest>=9.0.3",
 ]
 
 [project.optional-dependencies]
