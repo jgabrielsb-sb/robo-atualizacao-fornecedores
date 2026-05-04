@@ -1,13 +1,15 @@
-from .porte_enum import PorteEnum
-from .situacao_cadastral_enum import SituacaoCadastralEnum
-from .tipo_pessoa_enum import TipoPessoaEnum
-from .vinculo_sebrae_enum import VinculoSebraeEnum
-from .federacao_enum import FederacaoEnum
+from .porte_enum import PorteEnum, InvalidPorteError
+from .tipo_pessoa_enum import TipoPessoaEnum, InvalidTipoPessoaError
+from .vinculo_sebrae_enum import VinculoSebraeEnum, InvalidVinculoSebraeError
+from .federacao_enum import FederacaoEnum, InvalidFederacaoError
 
 __all__ = [
     "PorteEnum",
-    "SituacaoCadastralEnum",
+    "InvalidPorteError",
     "TipoPessoaEnum",
+    "InvalidTipoPessoaError",
     "VinculoSebraeEnum",
+    "InvalidVinculoSebraeError",
     "FederacaoEnum",
+    "InvalidFederacaoError",
 ]
