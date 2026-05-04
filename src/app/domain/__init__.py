@@ -2,10 +2,12 @@ from .enums import PorteEnum, SituacaoCadastralEnum, TipoPessoaEnum, VinculoSebr
 from .entities import Endereco, Fornecedor
 from .value_objects import (
     CEP,
+    InvalidCEPError,
+    InvalidCEPLengthError,
     CNPJ,
+    InvalidCNPJError,
     InvalidCNPJLengthError,
     CodigoIbge,
     DDD,
     Numero,
-    
 )
