@@ -1,8 +1,10 @@
 import re
 from dataclasses import dataclass
 
+class InvalidCNPJError(Exception):
+    pass
 
-class InvalidCNPJLengthError(Exception):
+class InvalidCNPJLengthError(InvalidCNPJError):
     def __init__(self, length: int):
         if not isinstance(length, int):
             raise TypeError('length must be an integer')
