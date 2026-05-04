@@ -1,0 +1,7 @@
+FORNECEDOR_NAO_ENCONTRADO = "Fornecedor com código {codigo} não encontrado."
+CNPJ_INVALIDO = "CNPJ inválido: {cnpj}."
+CONSULTA_CNPJ_FALHOU = "Falha ao consultar CNPJ {cnpj} na Receita Federal."
+ATUALIZACAO_CONCLUIDA = "Atualização do fornecedor {codigo} concluída com sucesso."
+ATUALIZACAO_FALHOU = "Falha ao atualizar o fornecedor {codigo}."
+WORKFLOW_INICIADO = "Workflow de atualização de fornecedores iniciado."
+WORKFLOW_CONCLUIDO = "Workflow de atualização de fornecedores concluído."
