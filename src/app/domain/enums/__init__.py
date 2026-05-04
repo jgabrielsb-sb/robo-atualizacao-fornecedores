@@ -4,3 +4,10 @@ from .tipo_pessoa_enum import TipoPessoaEnum
 from .vinculo_sebrae_enum import VinculoSebraeEnum
 from .federacao_enum import FederacaoEnum
 
+__all__ = [
+    "PorteEnum",
+    "SituacaoCadastralEnum",
+    "TipoPessoaEnum",
+    "VinculoSebraeEnum",
+    "FederacaoEnum",
+]
