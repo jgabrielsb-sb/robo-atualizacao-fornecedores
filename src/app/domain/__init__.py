@@ -7,7 +7,8 @@ from .value_objects import (
     CNPJ,
     InvalidCNPJError,
     InvalidCNPJLengthError,
-    CodigoIbge,
+    CodigoMunicipioIBGE,
+    InvalidCodigoMunicipioIBGECodeLengthError,
     DDD,
     Numero,
 )

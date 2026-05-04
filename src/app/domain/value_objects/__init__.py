@@ -10,14 +10,20 @@ from .cnpj_value_object import (
     InvalidCNPJError,
     InvalidCNPJLengthError,
 )
-from .codigo_ibge_value_object import CodigoIbge
+from .codigo_municipio_ibge import (
+    CodigoMunicipioIBGE,
+    InvalidCodigoMunicipioIBGEError,
+    InvalidCodigoMunicipioIBGECodeLengthError,
+)
 
 __all__ = [
     "CEP",
     "DDD",
     "Numero",
     "CNPJ",
-    "CodigoIbge",
+    "CodigoMunicipioIBGE",
+    "InvalidCodigoMunicipioIBGEError",
+    "InvalidCodigoMunicipioIBGECodeLengthError",
     "InvalidCNPJError",
     "InvalidCNPJLengthError",
     "InvalidCEPError",
