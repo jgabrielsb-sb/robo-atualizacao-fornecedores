@@ -24,3 +24,8 @@ class Fornecedor:
     tipo_pessoa: TipoPessoaEnum
     vinculo_sebrae: VinculoSebraeEnum
     federacao: FederacaoEnum
+    cooperativa: bool
+    codigo_retencao: str
+
+
+
