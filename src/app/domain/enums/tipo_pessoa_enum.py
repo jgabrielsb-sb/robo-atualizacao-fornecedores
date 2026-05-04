@@ -1,5 +1,6 @@
 from enum import Enum
 
 class TipoPessoaEnum(Enum):
-    PF = "PESSOA FISICA"
-    PJ = "PESSOA JURIDICA"
+   CI = "COMERCIO/INDUSTRIA"
+   PF = "PESSOA FISICA"
+   OS = "PRESTAÇAO DE SERVIÇO"
