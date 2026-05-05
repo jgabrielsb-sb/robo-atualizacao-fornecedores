@@ -1,2 +1,0 @@
-class Municipio:
-    pass

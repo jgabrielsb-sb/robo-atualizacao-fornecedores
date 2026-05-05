@@ -3,8 +3,8 @@ from .cep_value_object import (
     InvalidCEPError, 
     InvalidCEPLengthError,
 )
-from .ddd_value_object import DDD
-from .numero_value_object import Numero
+from .ddd_value_object import DDD, InvalidDDDError, InvalidDDDLengthError
+
 from .cnpj_value_object import (
     CNPJ, 
     InvalidCNPJError,
@@ -15,11 +15,17 @@ from .codigo_municipio_ibge import (
     InvalidCodigoMunicipioIBGEError,
     InvalidCodigoMunicipioIBGECodeLengthError,
 )
+from .situacao_cadastral_value_object import (
+    SituacaoCadastral,
+)
+from .municipio_value_object import Municipio
+from .endereco_value_object import Endereco
 
 __all__ = [
     "CEP",
     "DDD",
-    "Numero",
+    "InvalidDDDError",
+    "InvalidDDDLengthError",
     "CNPJ",
     "CodigoMunicipioIBGE",
     "InvalidCodigoMunicipioIBGEError",
@@ -28,4 +34,7 @@ __all__ = [
     "InvalidCNPJLengthError",
     "InvalidCEPError",
     "InvalidCEPLengthError",
+    "SituacaoCadastral",
+    "Municipio",
+    "Endereco",
 ]
