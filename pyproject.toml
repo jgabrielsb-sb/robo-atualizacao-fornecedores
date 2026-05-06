@@ -1,0 +1,55 @@
+[project]
+name = "robo_atualizacao_fornecedores"
+readme = "README.md"
+version = "0.0.1"
+authors = [
+  { name="João Gabriel Sampaio de Barros", email="jgabrielsb2002@gmail.com"},
+]
+description = "A Python package for automating the process of updating supplier data"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+dependencies = [
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.11.0",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.49",
+    "python-dotenv>=1.1.0",
+    "schedule>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-html>=3.0.0",
+]
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/app"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/tests"]
+pythonpath = ["src"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--html=report.html",
+]
+markers = [
+  "integration_tests: marks tests as integration tests",
+  "real_case_tests: marks tests as real case tests",
+]
+
+[tool.basedpyright]
+pythonVersion = "3.10"
+extraPaths = ["src"]

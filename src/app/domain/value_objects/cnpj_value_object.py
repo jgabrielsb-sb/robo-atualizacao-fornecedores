@@ -1,0 +1,2 @@
+class CNPJ:
+    pass
