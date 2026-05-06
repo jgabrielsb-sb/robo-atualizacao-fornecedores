@@ -2,6 +2,7 @@ from .porte_enum import PorteEnum, InvalidPorteError
 from .tipo_pessoa_enum import TipoPessoaEnum, InvalidTipoPessoaError
 from .vinculo_sebrae_enum import VinculoSebraeEnum, InvalidVinculoSebraeError
 from .federacao_enum import FederacaoEnum, InvalidFederacaoError
+from .status_enum import StatusEnum
 
 __all__ = [
     "PorteEnum",
@@ -12,4 +13,5 @@ __all__ = [
     "InvalidVinculoSebraeError",
     "FederacaoEnum",
     "InvalidFederacaoError",
+    "StatusEnum",
 ]
