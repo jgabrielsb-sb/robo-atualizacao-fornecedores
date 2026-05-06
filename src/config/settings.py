@@ -1,11 +1,24 @@
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv(override=True)
 
 
+
 class Settings(BaseSettings):
-    ENV: str = "development"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="allow",
+    )
+
+    ENV: str = "dev"
+
+    EMAIL_HOST: str
+    EMAIL_PORT: int
+    EMAIL_IS_TLS: bool
+    EMAIL_HOST_USER: str
+    EMAIL_HOST_PASSWORD: str
 
 
 settings = Settings()
