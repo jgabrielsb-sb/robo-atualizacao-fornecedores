@@ -1,11 +1,5 @@
-from dataclasses import dataclass
-
-
-@dataclass
-class WorkflowAtualizacaoFornecedoresUseCase:
-    fornecedor_repository: object
-    receita_federal: object
-    event_dispatcher: object
-
-    def execute(self) -> None:
-        raise NotImplementedError
+from .get_and_register_suppliers_to_update_workflow import (
+    GetAndRegisterFornecedoresToUpdateWorkflow,
+    GetAndRegisterFornecedoresToUpdateWorkflowError,
+    GetAndRegisterFornecedoresToUpdateWorkflowResult,
+)
