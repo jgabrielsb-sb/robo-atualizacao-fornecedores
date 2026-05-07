@@ -1,3 +1,8 @@
+"""
+The is the workflow that is responsible for getting the 'Fornecedores' on Protheus that must be updated.
+Then, the 'Fornecedores' are registered on the database and marked as 'to update'.
+"""
+
 import logging
 import uuid
 from pydantic import BaseModel
