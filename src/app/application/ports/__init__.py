@@ -1,7 +1,12 @@
 
 from .fornecedor_to_update import (
-    FornecedorToUpdateRepositoryPort, 
+    FornecedorToUpdateRepositoryPort,
     GetFornecedoresToUpdatePort,
-    FornecedorToUpdate, 
+    FornecedorToUpdate,
+)
+from .fornecedor import (
+    BuildFornecedorPort,
+    BuildFornecedorInput,
+    FornecedorRepositoryPort,
 )
 
