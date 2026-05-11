@@ -96,17 +96,6 @@ class CNPJJAAPIRequester:
             atividade_economica_code=fornecedor_data["atividade_economica_code"]
         )
 
-if __name__ == "__main__":
-    # cnpj_ja_api_requester = CNPJJAAPIRequester(
-    #     api_key="91c5ddae-60a6-4388-902c-340f290946e6-133f97d9-b8ae-44f9-ad86-3c1771cf4a8a",
-    #     max_age=1,
-    #     env="prod"
-    # )
-    # print(cnpj_ja_api_requester._base_url)
-    # result = cnpj_ja_api_requester.get(CNPJ("64223915000149"))
-    # print(result)
-    rpc_response = rpc_call(queue='cnpj.rpc', body={'action': 'cnpj.consultation', 'cnpj': document}, timeout=600)
-
 
 
 
