@@ -1,7 +1,6 @@
 """
-This is the workflow responsible for updating the 'Fornecedores' in the system.
-It retrieves the fornecedores marked as 'to update', fetches their full data via an external port,
-and persists the updated records through the repository port.
+Workflow responsible for retrieving the 'Fornecedores' that must be updated,
+building their full data via an external port, and persisting the updated records.
 """
 
 import logging
@@ -10,50 +9,44 @@ from pydantic import BaseModel
 
 from app.domain.enums import StatusEnum
 from app.domain.entities import Fornecedor
+
 from app.application.ports import (
-    GetFornecedoresToUpdatePort,
+    GetFornecedoresToUpdatePort, 
+    FornecedorRepositoryPort,
     FornecedorToUpdate,
     BuildFornecedorPort,
-    BuildFornecedorInput,
-    FornecedorRepositoryPort,
 )
 
 logger = logging.getLogger(__name__)
 
+class GetAndUpdateFornecedoresWorkflowError(Exception):
+    pass
 
-class UpdateFornecedoresWorkflowError(Exception):
+class GetFornecedoresToUpdateWorkflowError(GetAndUpdateFornecedoresWorkflowError):
+    pass
+
+class BuildFornecedorWorkflowError(GetAndUpdateFornecedoresWorkflowError):
+    pass
+
+class UpdateFornecedorWorkflowError(GetAndUpdateFornecedoresWorkflowError):
     pass
 
 
-class GetFornecedoresToUpdateWorkflowError(UpdateFornecedoresWorkflowError):
-    pass
-
-
-class BuildFornecedorWorkflowError(UpdateFornecedoresWorkflowError):
-    pass
-
-
-class UpdateFornecedorWorkflowError(UpdateFornecedoresWorkflowError):
-    pass
-
-
-class UpdateFornecedoresWorkflowResult(BaseModel):
+class GetAndUpdateFornecedoresWorkflowResult(BaseModel):
     workflow_trace_id: str
-    status: StatusEnum
-    fornecedores_to_update_count: int = 0
-    successfully_built_fornecedores_count: int = 0
-    failed_built_fornecedores_count: int = 0
-    successfully_updated_fornecedores_count: int = 0
-    failed_updated_fornecedores_count: int = 0
+    fornecedores_to_update_count: int
+    successfully_built_fornecedores_count: int
+    failed_built_fornecedores_count: int
+    successfully_updated_fornecedores_count: int
+    failed_updated_fornecedores_count: int
 
 
 GET_FORNECEDORES_TO_UPDATE_EVENT_NAME = "GET_FORNECEDORES_TO_UPDATE"
 BUILD_FORNECEDOR_EVENT_NAME = "BUILD_FORNECEDOR"
 UPDATE_FORNECEDOR_EVENT_NAME = "UPDATE_FORNECEDOR"
-WORKFLOW_EVENT_NAME = "UPDATE_FORNECEDORES"
+WORKFLOW_EVENT_NAME = "GET_AND_UPDATE_FORNECEDORES"
 
-
-class UpdateFornecedoresWorkflow:
+class GetAndUpdateFornecedoresWorkflow:
     def __init__(
         self,
         get_fornecedores_to_update: GetFornecedoresToUpdatePort,
@@ -65,21 +58,21 @@ class UpdateFornecedoresWorkflow:
         self._fornecedor_repository = fornecedor_repository
 
     def get_fornecedores_to_update(
-        self,
-        workflow_trace_id: str,
+        self, 
+        workflow_trace_id: str
     ) -> list[FornecedorToUpdate]:
         EVENT_NAME = GET_FORNECEDORES_TO_UPDATE_EVENT_NAME
         try:
             fornecedores_to_update = self._get_fornecedores_to_update.get()
             logger.info(
-                "Successfully retrieved fornecedores to update",
+                "Successfully retrieved fornecedores to update", 
                 extra={
                     "workflow_trace_id": workflow_trace_id,
                     "count": len(fornecedores_to_update),
                     "result": [str(fornecedor) for fornecedor in fornecedores_to_update],
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
-                },
+                }
             )
             return fornecedores_to_update
         except Exception as e:
@@ -96,31 +89,14 @@ class UpdateFornecedoresWorkflow:
                 f"Failed to retrieve fornecedores to update: {e}"
             ) from e
 
-    def _build_fornecedor_input(
-        self,
-        fornecedor_to_update: FornecedorToUpdate,
-    ) -> BuildFornecedorInput:
-        """
-        Maps a FornecedorToUpdate into a BuildFornecedorInput.
-
-        This method exists because the exact input shape may change later.
-        When the BuildFornecedorInput becomes more complete, change only this
-        method instead of changing the workflow orchestration.
-        """
-        return BuildFornecedorInput(
-            id=fornecedor_to_update.id,
-        )
-        
-
     def build_fornecedor(
         self,
         fornecedor_to_update: FornecedorToUpdate,
-        workflow_trace_id: str,
+        workflow_trace_id: str
     ) -> Fornecedor:
         EVENT_NAME = BUILD_FORNECEDOR_EVENT_NAME
         try:
-            fornecedor_input = self._build_fornecedor_input(fornecedor_to_update)
-            fornecedor = self._build_fornecedor.build(fornecedor_input)
+            fornecedor = self._build_fornecedor.build(fornecedor_to_update)
             logger.info(
                 "Successfully built fornecedor",
                 extra={
@@ -147,30 +123,31 @@ class UpdateFornecedoresWorkflow:
             ) from e
 
     def update_fornecedor(
-        self,
-        fornecedor: Fornecedor,
-        workflow_trace_id: str,
+        self, 
+        fornecedor: Fornecedor, 
+        workflow_trace_id: str
     ) -> None:
         EVENT_NAME = UPDATE_FORNECEDOR_EVENT_NAME
         try:
-            self._fornecedor_repository.update(fornecedor)
+            result = self._fornecedor_repository.update(fornecedor)
             logger.info(
                 "Successfully updated fornecedor",
                 extra={
                     "workflow_trace_id": workflow_trace_id,
-                    "fornecedor": str(fornecedor),
+                    "result": str(result),
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
-                },
+                    "fornecedor": str(fornecedor),
+                }
             )
         except Exception as e:
             logger.error(
                 "Failed to update fornecedor",
                 extra={
                     "workflow_trace_id": workflow_trace_id,
-                    "fornecedor": str(fornecedor),
                     "status": StatusEnum.ERROR.value,
                     "event_name": EVENT_NAME,
+                    "fornecedor": str(fornecedor),
                 },
                 exc_info=True,
             )
@@ -180,28 +157,16 @@ class UpdateFornecedoresWorkflow:
 
     def _log_result(
         self,
-        result: UpdateFornecedoresWorkflowResult,
+        result: GetAndUpdateFornecedoresWorkflowResult,
     ) -> None:
-        status = (
-            StatusEnum.SUCCESS.value
-            if result.failed_built_fornecedores_count == 0 
+        all_succeeded = (
+            result.failed_built_fornecedores_count == 0
             and result.failed_updated_fornecedores_count == 0
-            else StatusEnum.WARNING.value
         )
 
-        message = (
-            "Successfully updated all fornecedores"
-            if result.failed_built_fornecedores_count == 0 
-            and result.failed_updated_fornecedores_count == 0
-            else "Failed to update some fornecedores"
-        )
-
-        log_method = (
-            logger.info 
-            if result.failed_built_fornecedores_count == 0 
-            and result.failed_updated_fornecedores_count == 0 
-            else logger.warning
-        )
+        status = StatusEnum.SUCCESS.value if all_succeeded else StatusEnum.WARNING.value
+        message = "Successfully updated all fornecedores" if all_succeeded else "Failed to update some fornecedores"
+        log_method = logger.info if all_succeeded else logger.warning
 
         log_method(
             message,
@@ -217,24 +182,20 @@ class UpdateFornecedoresWorkflow:
             },
         )
 
-    def run(self) -> UpdateFornecedoresWorkflowResult:
+    def run(self) -> GetAndUpdateFornecedoresWorkflowResult:
         workflow_trace_id = str(uuid.uuid4())
+
+        fornecedores_to_update = self.get_fornecedores_to_update(workflow_trace_id)
+
+        successfully_built_fornecedores_count = 0
+        failed_built_fornecedores_count = 0
         
-        successfully_updated_fornecedores_count, failed_updated_fornecedores_count = 0, 0
-        successfully_built_fornecedores_count, failed_built_fornecedores_count = 0, 0
+        successfully_updated_fornecedores_count = 0
+        failed_updated_fornecedores_count = 0
 
-        try:
-            fornecedores_to_update = self.get_fornecedores_to_update(workflow_trace_id)
-        except GetFornecedoresToUpdateWorkflowError:
-            return UpdateFornecedoresWorkflowResult(
-                workflow_trace_id=workflow_trace_id,
-                status=StatusEnum.ERROR,
-                
-            )
-
-        for fornecedor_to_update in fornecedores_to_update:
+        for fornecedor in fornecedores_to_update:
             try:
-                fornecedor = self.build_fornecedor(fornecedor_to_update, workflow_trace_id)
+                fornecedor = self.build_fornecedor(fornecedor, workflow_trace_id)
                 successfully_built_fornecedores_count += 1
             except BuildFornecedorWorkflowError:
                 failed_built_fornecedores_count += 1
@@ -244,18 +205,19 @@ class UpdateFornecedoresWorkflow:
                 self.update_fornecedor(fornecedor, workflow_trace_id)
                 successfully_updated_fornecedores_count += 1
             except UpdateFornecedorWorkflowError:
-                failed_updated_fornecedores_count += 1
-                continue
-
-        result = UpdateFornecedoresWorkflowResult(
+               failed_updated_fornecedores_count += 1
+               continue
+           
+        result = GetAndUpdateFornecedoresWorkflowResult(
             workflow_trace_id=workflow_trace_id,
-            status=StatusEnum.SUCCESS if failed_built_fornecedores_count == 0 and failed_updated_fornecedores_count == 0 else StatusEnum.PARTIAL,
             fornecedores_to_update_count=len(fornecedores_to_update),
-            successfully_updated_fornecedores_count=successfully_updated_fornecedores_count,
-            failed_updated_fornecedores_count=failed_updated_fornecedores_count,
             successfully_built_fornecedores_count=successfully_built_fornecedores_count,
             failed_built_fornecedores_count=failed_built_fornecedores_count,
+            successfully_updated_fornecedores_count=successfully_updated_fornecedores_count,
+            failed_updated_fornecedores_count=failed_updated_fornecedores_count,
         )
-        
         self._log_result(result)
         return result
+
+        
+

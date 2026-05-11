@@ -22,6 +22,9 @@ dependencies = [
     "python-dotenv>=1.1.0",
     "schedule>=1.2.0",
     "pytest>=9.0.3",
+    "botasaurus>=4.0.97",
+    "pika>=1.4.0",
+    "selenium>=4.43.0",
 ]
 
 [project.optional-dependencies]

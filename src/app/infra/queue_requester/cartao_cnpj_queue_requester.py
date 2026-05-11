@@ -8,13 +8,13 @@ import pika
 
 RABBIT_USER = "super.mei"
 RABBIT_PASSWORD = "Sebrae01"
-RABBIT_HOST = "10.3.18.8"
+RABBIT_HOST = "10.3.18.1"
 RABBIT_PORT = 5672
 
 QUEUE_NAME = "cnpj.rpc"
 
 
-class RabbitMQRPCClient:
+class CartaoCNPJQueueRequester:
     def __init__(
         self,
         host: str,

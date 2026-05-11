@@ -1,5 +1,5 @@
 from .workflows import (
-    GetAndRegisterFornecedoresToUpdateWorkflow,
-    GetAndRegisterFornecedoresToUpdateWorkflowError,
-    GetAndRegisterFornecedoresToUpdateWorkflowResult,
+    GetAndUpdateFornecedoresWorkflow,
+    GetAndUpdateFornecedoresWorkflowError,
+    GetAndUpdateFornecedoresWorkflowResult,
 )

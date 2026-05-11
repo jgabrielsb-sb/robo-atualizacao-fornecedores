@@ -1,2 +1,2 @@
-from .build_fornecedor_port import BuildFornecedorPort, BuildFornecedorInput
+from .build_fornecedor_port import BuildFornecedorPort
 from .fornecedor_repository_port import FornecedorRepositoryPort

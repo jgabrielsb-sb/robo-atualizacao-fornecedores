@@ -6,7 +6,6 @@ from .fornecedor_to_update import (
 )
 from .fornecedor import (
     BuildFornecedorPort,
-    BuildFornecedorInput,
     FornecedorRepositoryPort,
 )
 
