@@ -1,5 +1,5 @@
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 class InvalidCEPError(Exception):
@@ -17,7 +17,7 @@ class InvalidCEPLengthError(InvalidCEPError):
 @dataclass
 class CEP:
     value: str
-    formatted: str = ""
+    formatted: str = field(default="", compare=False)
 
     def __post_init__(self):
         self.value = re.sub(r'\D', '', self.value)
@@ -29,3 +29,7 @@ class CEP:
             raise InvalidCEPLengthError(len(digits))
         formatted = f"{digits[:5]}-{digits[5:]}"
         return cls(value=digits, formatted=formatted)
+
+    
+
+    
