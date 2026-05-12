@@ -20,6 +20,7 @@ from .situacao_cadastral_value_object import (
 )
 from .municipio_value_object import Municipio
 from .endereco_value_object import Endereco
+from .cartao_cnpj import CartaoCNPJ
 
 __all__ = [
     "CEP",
@@ -37,4 +38,5 @@ __all__ = [
     "SituacaoCadastral",
     "Municipio",
     "Endereco",
+    "CartaoCNPJ",
 ]

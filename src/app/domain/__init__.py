@@ -5,7 +5,12 @@ from .enums import (
     FederacaoEnum, 
     InvalidFederacaoError,
 )
-from .entities import Fornecedor
+from .entities import (
+    Fornecedor,
+    FornecedorIdentificacao,
+    FornecedorDadosCadastrais,
+    FornecedorDadosContato,
+)
 from .value_objects import (
     CEP,
     InvalidCEPError,
