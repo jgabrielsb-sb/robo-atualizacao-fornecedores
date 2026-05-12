@@ -12,6 +12,8 @@ class Settings(BaseSettings):
         extra="allow",
     )
 
+    FORNECEDORES_API_BASE_URL: str
+
     ENV: str = "dev"
 
     EMAIL_HOST: str
