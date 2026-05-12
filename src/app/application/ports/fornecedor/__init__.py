@@ -1,2 +1,2 @@
-from .build_fornecedor_port import BuildFornecedorPort
 from .fornecedor_repository_port import FornecedorRepositoryPort
+from .build_fornecedor import BuildFornecedorPort, GetCartaoCNPJPort

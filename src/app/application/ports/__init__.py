@@ -7,6 +7,7 @@ from .fornecedor_to_update import (
 from .fornecedor import (
     BuildFornecedorPort,
     FornecedorRepositoryPort,
+    GetCartaoCNPJPort,
 )
 
 from .municipio_lookup_port import MunicipioLookupPort
