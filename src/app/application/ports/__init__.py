@@ -9,3 +9,4 @@ from .fornecedor import (
     FornecedorRepositoryPort,
 )
 
+from .municipio_lookup_port import MunicipioLookupPort
