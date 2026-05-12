@@ -11,3 +11,4 @@ from .exceptions import (
 )
 
 from .fornecedores_api_requester import FornecedoresAPIRequester
+from .receita_api_requester import ReceitaAPIRequester
