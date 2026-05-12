@@ -21,6 +21,7 @@ from .situacao_cadastral_value_object import (
 from .municipio_value_object import Municipio
 from .endereco_value_object import Endereco
 from .cartao_cnpj import CartaoCNPJ
+from .telefone_value_object import Telefone
 
 __all__ = [
     "CEP",
@@ -39,4 +40,5 @@ __all__ = [
     "Municipio",
     "Endereco",
     "CartaoCNPJ",
+    "Telefone",
 ]
