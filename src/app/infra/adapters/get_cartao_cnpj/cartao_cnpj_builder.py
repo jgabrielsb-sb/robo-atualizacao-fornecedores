@@ -4,6 +4,7 @@ from typing import Any, Dict
 
 from app.domain.enums import PorteEnum
 from app.application.ports import MunicipioLookupPort
+from app.domain.enums import SituacaoCadastralEnum
 
 from app.domain.value_objects import (
     Endereco, 
@@ -48,16 +49,16 @@ class CartaoCNPJBuilder:
         except Exception as e:
             raise ErrorWhileGettingExternalDataError(f"Failed to get municipio: {e}") from e
 
-    def _get_endereco(self, address: Dict[str, Any]) -> Endereco | None:
-        if not address["zip_code"] or not address["city"]:
-            return None
-            
+    def _get_endereco(self, address: Dict[str, Any]) -> Endereco:
+        cep = CEP.create(cep=address["zip_code"]) if address["zip_code"] else None
+        municipio = self._get_municipio(address["city"]) if address["city"] else None
+        
         return Endereco.create(
             endereco=address["street"],
             numero=address["number"],
             complemento=address["complement"],
-            cep=CEP.create(cep=address["zip_code"]),
-            municipio=self._get_municipio(address["city"]),
+            cep=cep,
+            municipio=municipio,
         )
 
     def _get_telefone(self, telefone: str) -> Telefone:
@@ -67,6 +68,9 @@ class CartaoCNPJBuilder:
         return Telefone.create(
             value=telefone
         )
+
+    def _get_situacao_cadastral(self, situacao_cadastral: str) -> SituacaoCadastralEnum:
+        return SituacaoCadastralEnum.from_value(situacao_cadastral)
 
     def build(self, response: Dict[str, Any]) -> CartaoCNPJ:
         data = response["data"]
@@ -78,5 +82,5 @@ class CartaoCNPJBuilder:
             endereco=self._get_endereco(data["address"]),
             telefone=self._get_telefone(data["contact"]["phone"]) ,
             natureza_juridica=data["legal_nature"]["description"],
-            situacao_cadastral=data["registration_status"]["status"], 
+            situacao_cadastral=self._get_situacao_cadastral(data["registration_status"]["status"]), 
         )

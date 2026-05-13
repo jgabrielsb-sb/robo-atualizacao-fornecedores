@@ -4,6 +4,8 @@ from app.infra.adapters.get_cartao_cnpj import CartaoCNPJBuilder
 
 from app.application.ports import MunicipioLookupPort
 from app.domain.enums import PorteEnum
+from app.domain.enums import SituacaoCadastralEnum
+
 from app.domain.value_objects import (
     CartaoCNPJ, 
     Telefone, 
@@ -87,7 +89,7 @@ element_data_1 = {
         ),
       ),
       natureza_juridica="Empresário (Individual)",
-      situacao_cadastral="ATIVA",
+      situacao_cadastral=SituacaoCadastralEnum.ATIVA,
     ),   
 }
 
@@ -159,7 +161,7 @@ element_data_2 = {
           codigo_ibge=CodigoMunicipioIBGE(value="123457"),
         ),
       ),
-      situacao_cadastral="ATIVA",
+      situacao_cadastral=SituacaoCadastralEnum.ATIVA,
     ),
 }
 
@@ -216,8 +218,14 @@ element_data_3 = {
       atividade_economica_principal_str=None,
       telefone=Telefone(ddd=DDD(value="17"), numero="33795312"),
       natureza_juridica="Empresário (Individual)",
-      endereco=None,
-      situacao_cadastral="INAPTA",
+      endereco=Endereco(
+        endereco=None,
+        numero=None,
+        complemento=None,
+        cep=None,
+        municipio=None,
+      ),
+      situacao_cadastral=SituacaoCadastralEnum.INAPTA,
     ),
 }
 
@@ -297,7 +305,7 @@ element_data_4 = {
           codigo_ibge=CodigoMunicipioIBGE(value="123458"),
         ),
       ),
-      situacao_cadastral="ATIVA",
+      situacao_cadastral=SituacaoCadastralEnum.ATIVA,
     ),
 }
 
@@ -385,7 +393,7 @@ element_data_5 = {
           codigo_ibge=CodigoMunicipioIBGE(value="123459"),
         ),
       ),
-      situacao_cadastral="ATIVA",
+      situacao_cadastral=SituacaoCadastralEnum.ATIVA,
     ),
 }
 
