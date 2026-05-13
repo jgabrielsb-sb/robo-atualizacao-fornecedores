@@ -13,7 +13,8 @@ class Settings(BaseSettings):
     )
 
     FORNECEDORES_API_BASE_URL: str
-
+    RECEITA_API_BASE_URL: str
+    
     ENV: str = "dev"
 
     EMAIL_HOST: str

@@ -6,7 +6,7 @@ from app.domain.enums import (
     TipoPessoaEnum,
     VinculoSebraeEnum,
 )
-from app.domain.value_objects import SituacaoCadastral
+from app.domain.enums import SituacaoCadastralEnum
 
 
 class InvalidFornecedorDadosCadastraisError(Exception):
@@ -17,7 +17,7 @@ class InvalidFornecedorDadosCadastraisError(Exception):
 class FornecedorDadosCadastrais:
     porte: PorteEnum
     opt_simples_nacional: bool
-    situacao_cadastral: SituacaoCadastral
+    situacao_cadastral: SituacaoCadastralEnum
     tipo_pessoa: TipoPessoaEnum
     vinculo_sebrae: VinculoSebraeEnum
     federacao: FederacaoEnum
@@ -29,7 +29,7 @@ class FornecedorDadosCadastrais:
             raise TypeError("porte must be a PorteEnum")
         if not isinstance(self.opt_simples_nacional, bool):
             raise TypeError("opt_simples_nacional must be a bool")
-        if not isinstance(self.situacao_cadastral, SituacaoCadastral):
+        if not isinstance(self.situacao_cadastral, SituacaoCadastralEnum):
             raise TypeError("situacao_cadastral must be a SituacaoCadastral")
         if not isinstance(self.tipo_pessoa, TipoPessoaEnum):
             raise TypeError("tipo_pessoa must be a TipoPessoaEnum")
@@ -48,7 +48,7 @@ class FornecedorDadosCadastrais:
         *,
         porte: str | PorteEnum,
         opt_simples_nacional: bool,
-        situacao_cadastral: SituacaoCadastral,
+        situacao_cadastral: str | SituacaoCadastralEnum,
         tipo_pessoa: str | TipoPessoaEnum,
         vinculo_sebrae: str | VinculoSebraeEnum,
         federacao: str | FederacaoEnum,
@@ -58,7 +58,7 @@ class FornecedorDadosCadastrais:
         return cls(
             porte=PorteEnum.from_value(porte),
             opt_simples_nacional=opt_simples_nacional,
-            situacao_cadastral=situacao_cadastral,
+            situacao_cadastral=SituacaoCadastralEnum.from_value(situacao_cadastral),
             tipo_pessoa=TipoPessoaEnum.from_value(tipo_pessoa),
             vinculo_sebrae=VinculoSebraeEnum.from_value(vinculo_sebrae),
             federacao=FederacaoEnum.from_value(federacao),

@@ -5,13 +5,13 @@ from typing import Optional
 @dataclass(frozen=True)
 class SituacaoCadastral:
     ativo: bool
-    bloqueado: bool
+    bloqueado: Optional[bool] = None
     motivo_bloqueio: Optional[str] = None
 
     def __post_init__(self):
         if not isinstance(self.ativo, bool):
             raise TypeError("ativo must be a boolean")
-        if not isinstance(self.bloqueado, bool):
+        if self.bloqueado and not isinstance(self.bloqueado, bool):
             raise TypeError("bloqueado must be a boolean")
         if self.motivo_bloqueio and not isinstance(self.motivo_bloqueio, str):
             raise TypeError("motivo_bloqueio must be a string")
