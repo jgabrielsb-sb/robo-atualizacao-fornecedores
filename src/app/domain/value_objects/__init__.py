@@ -10,6 +10,12 @@ from .cnpj_value_object import (
     InvalidCNPJError,
     InvalidCNPJLengthError,
 )
+
+from .cpf_value_object import (
+    CPF,
+    InvalidCPFError,
+    InvalidCPFLengthError,
+)
 from .codigo_municipio_ibge import (
     CodigoMunicipioIBGE,
     InvalidCodigoMunicipioIBGEError,
