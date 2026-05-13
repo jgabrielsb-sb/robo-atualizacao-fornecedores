@@ -9,6 +9,7 @@ from .fornecedor import (
     FornecedorRepositoryPort,
     GetCartaoCNPJPort,
     GetOptSimplesNacionalPort,
+    GetEnderecoPort,
 )
 
 from .municipio_lookup_port import MunicipioLookupPort
