@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
-from pydantic import BaseModel
 from app.domain.entities import Fornecedor
-
-from app.application.ports import FornecedorToUpdate
+from app.domain.value_objects import CNPJ
 
 
 class BuildFornecedorPort(ABC):
     @abstractmethod
-    def build(self, fornecedor_to_update: FornecedorToUpdate) -> Fornecedor:
+    def build(self, cnpj: CNPJ) -> Fornecedor:
         pass

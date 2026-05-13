@@ -8,9 +8,10 @@ from app.domain import (
 )
 
 from app.application.ports import (
-    GetOptSimplesNacionalPort, 
-    GetCartaoCNPJPort, 
+    GetOptSimplesNacionalPort,
+    GetCartaoCNPJPort,
     GetEnderecoPort,
+    BuildFornecedorPort,
 )
 
 from app.domain.value_objects import CartaoCNPJ
@@ -29,7 +30,7 @@ class GetOptanteSimplesNacionalError(FornecedorBuilderServiceError):
 class GetCartaoCNPJError(FornecedorBuilderServiceError):
     pass
 
-class FornecedorBuilderService:
+class FornecedorBuilderService(BuildFornecedorPort):
     def __init__(
         self,
         get_opt_simples_nacional_port: GetOptSimplesNacionalPort,
@@ -45,8 +46,6 @@ class FornecedorBuilderService:
             return self._get_opt_simples_nacional_port.get(cnpj)
         except Exception as e:
             raise GetOptanteSimplesNacionalError(f"Failed to get optante simples nacional: {e}") from e
-
-    from dataclasses import fields, replace
 
     def _get_endereco(
         self,

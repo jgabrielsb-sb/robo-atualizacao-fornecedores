@@ -5,10 +5,15 @@ from app.application.ports import (
     BuildFornecedorPort,
     FornecedorRepositoryPort,
 )
+from app.domain.value_objects import CNPJ
 
 
 class FakeFornecedorToUpdate(BaseModel):
     id: int
+
+    @property
+    def cnpj(self) -> CNPJ:
+        return CNPJ(value=f"{self.id:014d}")
 
     def __str__(self) -> str:
         return f"FornecedorToUpdate(id={self.id})"
@@ -40,10 +45,11 @@ class FakeBuildFornecedorPort(BuildFornecedorPort):
     def __init__(self, fail_fornecedores_ids: list[int] | None = None):
         self._fail_fornecedores_ids = fail_fornecedores_ids or []
 
-    def build(self, fornecedor_to_update: FakeFornecedorToUpdate) -> FakeFornecedor:
-        if fornecedor_to_update.id in self._fail_fornecedores_ids:
+    def build(self, cnpj: CNPJ) -> FakeFornecedor:
+        id_ = int(cnpj.value)
+        if id_ in self._fail_fornecedores_ids:
             raise RuntimeError("Error building fornecedor")
-        return FakeFornecedor(id=fornecedor_to_update.id)
+        return FakeFornecedor(id=id_)
 
 
 class FakeFornecedorRepositoryPort(FornecedorRepositoryPort):

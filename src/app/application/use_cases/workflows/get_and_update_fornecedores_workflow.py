@@ -96,7 +96,7 @@ class GetAndUpdateFornecedoresWorkflow:
     ) -> Fornecedor:
         EVENT_NAME = BUILD_FORNECEDOR_EVENT_NAME
         try:
-            fornecedor = self._build_fornecedor.build(fornecedor_to_update)
+            fornecedor = self._build_fornecedor.build(fornecedor_to_update.cnpj)
             logger.info(
                 "Successfully built fornecedor",
                 extra={
