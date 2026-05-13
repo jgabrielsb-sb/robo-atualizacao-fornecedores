@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 
 from config.settings import settings
-from app.infra.api_requester.fornecedores_api_requester import FornecedoresAPIRequester
+from app.infra.api_requester import (
+    FornecedoresAPIRequester, 
+    ReceitaAPIRequester,
+)
 
 @dataclass
 class InfraProvider:
@@ -10,4 +13,8 @@ class InfraProvider:
             base_url=settings.FORNECEDORES_API_BASE_URL
         )
 
+    def get_receita_api_requester(self) -> ReceitaAPIRequester:
+        return ReceitaAPIRequester(
+            base_url=settings.RECEITA_API_BASE_URL
+        )
     
