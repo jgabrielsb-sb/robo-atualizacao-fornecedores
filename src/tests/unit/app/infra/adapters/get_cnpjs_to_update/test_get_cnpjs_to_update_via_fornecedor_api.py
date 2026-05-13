@@ -28,31 +28,31 @@ def fake_fornecedores_api_requester(
 @pytest.fixture
 def fornecedor_to_update_with_cpf() -> FornecedorToUpdate:
     return FornecedorToUpdate(
-        loja="test loja",
-        codigo="test codigo",
-        nome="test nome",
-        nome_fantasia="test nome fantasia",
-        cpf_cnpj="529.982.247-25",
+        LOJA="test loja",
+        CODIGO="test codigo",
+        NOME="test nome",
+        NOME_FANTASIA="test nome fantasia",
+        CPF_CNPJ="529.982.247-25",
     )
 
 @pytest.fixture
 def fornecedor_to_update_with_cnpj() -> FornecedorToUpdate:
     return FornecedorToUpdate(
-        loja="test loja",
-        codigo="test codigo",
-        nome="test nome",
-        nome_fantasia="test nome fantasia",
-        cpf_cnpj="62.173.620/0001-80",
+        LOJA="test loja",
+        CODIGO="test codigo",
+        NOME="test nome",
+        NOME_FANTASIA="test nome fantasia",
+        CPF_CNPJ="62.173.620/0001-80",
     )
 
 @pytest.fixture
 def fornecedor_to_update_with_invalid_identifier() -> FornecedorToUpdate:
     return FornecedorToUpdate(
-        loja="test loja",
-        codigo="test codigo",
-        nome="test nome",
-        nome_fantasia="test nome fantasia",
-        cpf_cnpj="123",
+        LOJA="test loja",
+        CODIGO="test codigo",
+        NOME="test nome",
+        NOME_FANTASIA="test nome fantasia",
+        CPF_CNPJ="123",
     )
 
 def test_should_return_just_cnpjs_when_some_fornecedores_have_cpfs(
