@@ -1,6 +1,6 @@
 """
-Workflow responsible for retrieving the 'Fornecedores' that must be updated,
-building their full data via an external port, and persisting the updated records.
+Workflow responsible for retrieving the CNPJs that must be updated,
+building their full Fornecedor data via an external port, and persisting the updated records.
 """
 
 import logging
@@ -9,11 +9,11 @@ from pydantic import BaseModel
 
 from app.domain.enums import StatusEnum
 from app.domain.entities import Fornecedor
+from app.domain.value_objects import CNPJ
 
 from app.application.ports import (
-    GetFornecedoresToUpdatePort, 
+    GetCNPJsToUpdatePort,
     FornecedorRepositoryPort,
-    FornecedorToUpdate,
     BuildFornecedorPort,
 )
 
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class GetAndUpdateFornecedoresWorkflowError(Exception):
     pass
 
-class GetFornecedoresToUpdateWorkflowError(GetAndUpdateFornecedoresWorkflowError):
+class GetCNPJsToUpdateWorkflowError(GetAndUpdateFornecedoresWorkflowError):
     pass
 
 class BuildFornecedorWorkflowError(GetAndUpdateFornecedoresWorkflowError):
@@ -41,7 +41,7 @@ class GetAndUpdateFornecedoresWorkflowResult(BaseModel):
     failed_updated_fornecedores_count: int
 
 
-GET_FORNECEDORES_TO_UPDATE_EVENT_NAME = "GET_FORNECEDORES_TO_UPDATE"
+GET_CNPJS_TO_UPDATE_EVENT_NAME = "GET_CNPJS_TO_UPDATE"
 BUILD_FORNECEDOR_EVENT_NAME = "BUILD_FORNECEDOR"
 UPDATE_FORNECEDOR_EVENT_NAME = "UPDATE_FORNECEDOR"
 WORKFLOW_EVENT_NAME = "GET_AND_UPDATE_FORNECEDORES"
@@ -49,35 +49,35 @@ WORKFLOW_EVENT_NAME = "GET_AND_UPDATE_FORNECEDORES"
 class GetAndUpdateFornecedoresWorkflow:
     def __init__(
         self,
-        get_fornecedores_to_update: GetFornecedoresToUpdatePort,
+        get_cnpjs_to_update: GetCNPJsToUpdatePort,
         build_fornecedor: BuildFornecedorPort,
         fornecedor_repository: FornecedorRepositoryPort,
     ):
-        self._get_fornecedores_to_update = get_fornecedores_to_update
+        self._get_cnpjs_to_update = get_cnpjs_to_update
         self._build_fornecedor = build_fornecedor
         self._fornecedor_repository = fornecedor_repository
 
-    def get_fornecedores_to_update(
-        self, 
+    def get_cnpjs_to_update(
+        self,
         workflow_trace_id: str
-    ) -> list[FornecedorToUpdate]:
-        EVENT_NAME = GET_FORNECEDORES_TO_UPDATE_EVENT_NAME
+    ) -> list[CNPJ]:
+        EVENT_NAME = GET_CNPJS_TO_UPDATE_EVENT_NAME
         try:
-            fornecedores_to_update = self._get_fornecedores_to_update.get()
+            cnpjs_to_update = self._get_cnpjs_to_update.get()
             logger.info(
-                "Successfully retrieved fornecedores to update", 
+                "Successfully retrieved CNPJs to update",
                 extra={
                     "workflow_trace_id": workflow_trace_id,
-                    "count": len(fornecedores_to_update),
-                    "result": [str(fornecedor) for fornecedor in fornecedores_to_update],
+                    "count": len(cnpjs_to_update),
+                    "result": [str(cnpj) for cnpj in cnpjs_to_update],
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 }
             )
-            return fornecedores_to_update
+            return cnpjs_to_update
         except Exception as e:
             logger.error(
-                "Failed to retrieve fornecedores to update",
+                "Failed to retrieve CNPJs to update",
                 extra={
                     "workflow_trace_id": workflow_trace_id,
                     "status": StatusEnum.ERROR.value,
@@ -85,23 +85,23 @@ class GetAndUpdateFornecedoresWorkflow:
                 },
                 exc_info=True,
             )
-            raise GetFornecedoresToUpdateWorkflowError(
-                f"Failed to retrieve fornecedores to update: {e}"
+            raise GetCNPJsToUpdateWorkflowError(
+                f"Failed to retrieve CNPJs to update: {e}"
             ) from e
 
     def build_fornecedor(
         self,
-        fornecedor_to_update: FornecedorToUpdate,
+        cnpj: CNPJ,
         workflow_trace_id: str
     ) -> Fornecedor:
         EVENT_NAME = BUILD_FORNECEDOR_EVENT_NAME
         try:
-            fornecedor = self._build_fornecedor.build(fornecedor_to_update.cnpj)
+            fornecedor = self._build_fornecedor.build(cnpj)
             logger.info(
                 "Successfully built fornecedor",
                 extra={
                     "workflow_trace_id": workflow_trace_id,
-                    "fornecedor_to_update": str(fornecedor_to_update),
+                    "cnpj": str(cnpj),
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 },
@@ -112,7 +112,7 @@ class GetAndUpdateFornecedoresWorkflow:
                 "Failed to build fornecedor",
                 extra={
                     "workflow_trace_id": workflow_trace_id,
-                    "fornecedor_to_update": str(fornecedor_to_update),
+                    "cnpj": str(cnpj),
                     "status": StatusEnum.ERROR.value,
                     "event_name": EVENT_NAME,
                 },
@@ -123,8 +123,8 @@ class GetAndUpdateFornecedoresWorkflow:
             ) from e
 
     def update_fornecedor(
-        self, 
-        fornecedor: Fornecedor, 
+        self,
+        fornecedor: Fornecedor,
         workflow_trace_id: str
     ) -> None:
         EVENT_NAME = UPDATE_FORNECEDOR_EVENT_NAME
@@ -185,17 +185,17 @@ class GetAndUpdateFornecedoresWorkflow:
     def run(self) -> GetAndUpdateFornecedoresWorkflowResult:
         workflow_trace_id = str(uuid.uuid4())
 
-        fornecedores_to_update = self.get_fornecedores_to_update(workflow_trace_id)
+        cnpjs_to_update = self.get_cnpjs_to_update(workflow_trace_id)
 
         successfully_built_fornecedores_count = 0
         failed_built_fornecedores_count = 0
-        
+
         successfully_updated_fornecedores_count = 0
         failed_updated_fornecedores_count = 0
 
-        for fornecedor in fornecedores_to_update:
+        for cnpj in cnpjs_to_update:
             try:
-                fornecedor = self.build_fornecedor(fornecedor, workflow_trace_id)
+                fornecedor = self.build_fornecedor(cnpj, workflow_trace_id)
                 successfully_built_fornecedores_count += 1
             except BuildFornecedorWorkflowError:
                 failed_built_fornecedores_count += 1
@@ -205,12 +205,12 @@ class GetAndUpdateFornecedoresWorkflow:
                 self.update_fornecedor(fornecedor, workflow_trace_id)
                 successfully_updated_fornecedores_count += 1
             except UpdateFornecedorWorkflowError:
-               failed_updated_fornecedores_count += 1
-               continue
-           
+                failed_updated_fornecedores_count += 1
+                continue
+
         result = GetAndUpdateFornecedoresWorkflowResult(
             workflow_trace_id=workflow_trace_id,
-            fornecedores_to_update_count=len(fornecedores_to_update),
+            fornecedores_to_update_count=len(cnpjs_to_update),
             successfully_built_fornecedores_count=successfully_built_fornecedores_count,
             failed_built_fornecedores_count=failed_built_fornecedores_count,
             successfully_updated_fornecedores_count=successfully_updated_fornecedores_count,
@@ -218,6 +218,3 @@ class GetAndUpdateFornecedoresWorkflow:
         )
         self._log_result(result)
         return result
-
-        
-
