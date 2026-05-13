@@ -3,8 +3,8 @@ from http import HTTPStatus
 from pydantic import BaseModel
 from typing import Optional
 
-from app.infra.api_requester import RouteNotFoundError, NotFoundError, UnexpectedError
 from app.domain.value_objects import CNPJ
+from app.infra.api_requester.exceptions import APIRequesterException, NotFoundError
 
 class ReceitaAPIGetCompanyResponse(BaseModel):
     CNPJ: Optional[str] = None  
@@ -51,6 +51,7 @@ class ReceitaAPIRequester:
 
         :param cnpj: The cnpj of the company.
         :type cnpj: CNPJ
+        
         :return: The company.
         :rtype: ReceitaAPIGetCompanyResponse
         :raises RouteNotFoundError: If the route is not found.
@@ -59,22 +60,18 @@ class ReceitaAPIRequester:
         """
         url = f"{self._base_url}/receita/api/v1/empresa-receita/get-by-cnpj/{cnpj.value}"
         response = requests.get(url)
-    
-        if response.status_code == HTTPStatus.OK:
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
             data = response.json()
             return ReceitaAPIGetCompanyResponse.model_validate(data)
-        
-        elif response.status_code == HTTPStatus.NOT_FOUND:
-            if response.json().get("detail") and "Not Found" in response.json().get("detail"):
-                raise RouteNotFoundError(
-                    f"Route not found: {url}"
-                )
-            
+        elif status_code == HTTPStatus.NOT_FOUND:
             raise NotFoundError(
-                f"Company not found: {cnpj.value}. API Response: {response.json()}"
+                f"Company with CNPJ {cnpj.value} not found"
             )
         
-        else:
-            raise UnexpectedError(
-                f"Unexpected error: {response.json()}. API Response: {response.json()}"
+        raise APIRequesterException(
+                f"Failed to get company by CNPJ: {cnpj.value}"
+                f"Status Code: {status_code} \n"
+                f"Response text: {response.text}"
             )
