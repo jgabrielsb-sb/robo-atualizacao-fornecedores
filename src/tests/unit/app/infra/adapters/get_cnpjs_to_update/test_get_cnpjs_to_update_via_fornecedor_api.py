@@ -1,7 +1,7 @@
 import pytest
 
 from app.infra.adapters.get_cnpjs_to_update import (
-    GetCNPJsToUpdateViaFornecedoresAPIRequester,
+    GetCNPJsToUpdateViaFornecedoresAPI,
     InvalidIdentifierError,
 )
 from app.infra.api_requester.fornecedores_api_requester  import (
@@ -68,7 +68,7 @@ def test_should_return_just_cnpjs_when_some_fornecedores_have_cpfs(
         mock_get_fornecedores_to_update=mock_get_fornecedores_to_update,
     )
 
-    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPIRequester(
+    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPI(
         fornecedores_api_requester=fornecedores_api_requester,
     )
 
@@ -88,7 +88,7 @@ def test_should_return_empty_list_when_all_fornecedores_have_cpfs(
         ],
     )
 
-    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPIRequester(
+    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPI(
         fornecedores_api_requester=fornecedores_api_requester,
     )
 
@@ -107,7 +107,7 @@ def test_should_raise_error_when_fornecedor_has_identifier_that_is_not_a_cpf_or_
         ],
     )
 
-    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPIRequester(
+    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPI(
         fornecedores_api_requester=fornecedores_api_requester,
     )
 
@@ -126,7 +126,7 @@ def test_should_raise_empty_list_when_there_are_no_fornecedores_to_update():
             mock_get_fornecedores_to_update=mock_value,
         )
 
-        get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPIRequester(
+        get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPI(
             fornecedores_api_requester=fornecedores_api_requester,
         )
 
