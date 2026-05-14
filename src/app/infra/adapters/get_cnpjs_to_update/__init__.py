@@ -1,9 +1,9 @@
 from .get_cnpjs_to_update_via_fornecedor_api import (
-    GetCNPJsToUpdateViaFornecedoresAPIRequester, 
+    GetCNPJsToUpdateViaFornecedoresAPI, 
     InvalidIdentifierError,
 )
 
 __all__ = [
-    "GetCNPJsToUpdateViaFornecedoresAPIRequester",
+    "GetCNPJsToUpdateViaFornecedoresAPI",
     "InvalidIdentifierError",
 ]

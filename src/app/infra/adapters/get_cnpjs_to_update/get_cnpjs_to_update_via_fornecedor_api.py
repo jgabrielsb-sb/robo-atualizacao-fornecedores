@@ -6,10 +6,13 @@ from app.domain.value_objects import (
     InvalidCPFError,
 )
 
-class InvalidIdentifierError(Exception):
+class GetCNPJsToUpdateViaFornecedoresAPIError(Exception):
     pass
 
-class GetCNPJsToUpdateViaFornecedoresAPIRequester:
+class InvalidIdentifierError(GetCNPJsToUpdateViaFornecedoresAPIError):
+    pass
+
+class GetCNPJsToUpdateViaFornecedoresAPI:
     def __init__(
         self,
         fornecedores_api_requester: FornecedoresAPIRequester,
@@ -33,15 +36,15 @@ class GetCNPJsToUpdateViaFornecedoresAPIRequester:
         fornecedores_to_update = self._fornecedores_api_requester.get_fornecedores_to_update() or []
         
         for fornecedor in fornecedores_to_update:
-            if self._is_cpf(fornecedor.cpf_cnpj):
+            if self._is_cpf(fornecedor.CPF_CNPJ):
                 continue
 
             try:
-                cnpj = CNPJ.create(cnpj=fornecedor.cpf_cnpj)
+                cnpj = CNPJ.create(cnpj=fornecedor.CPF_CNPJ)
                 cnpjs.append(cnpj)
             except InvalidCNPJError:
                 raise InvalidIdentifierError(
-                    f"The identifier {fornecedor.cpf_cnpj} is not a valid CNPJ nor a valid CPF"
+                    f"The identifier {fornecedor.CPF_CNPJ} is not a valid CNPJ nor a valid CPF"
                 )
 
         return cnpjs
