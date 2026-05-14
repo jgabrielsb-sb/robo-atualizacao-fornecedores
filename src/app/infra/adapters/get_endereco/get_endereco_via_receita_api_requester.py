@@ -2,12 +2,10 @@
 from app.domain.value_objects import CNPJ, Endereco, CEP, Municipio
 from app.infra.api_requester import ReceitaAPIRequester
 from app.application.ports import (
-    GetEnderecoPort, 
+    GetEnderecoPort,
     MunicipioLookupPort,
 )
-
-class ErrorWhileGettingExternalDataError(Exception):
-    pass
+from app.infra.adapters.exceptions import ErrorWhileGettingExternalDataError
 
 class GetEnderecoViaReceitaAPIRequester(GetEnderecoPort):
     def __init__(

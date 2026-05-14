@@ -5,6 +5,7 @@ from typing import Any, Dict
 from app.domain.enums import PorteEnum
 from app.application.ports import MunicipioLookupPort
 from app.domain.enums import SituacaoCadastralEnum
+from app.infra.adapters.exceptions import ErrorWhileGettingExternalDataError
 
 from app.domain.value_objects import (
     Endereco, 
@@ -32,9 +33,6 @@ def _map_porte(size: str) -> PorteEnum:
     if not porte_enum:
         raise ValueError(f"Could not map porte to a valid PorteEnum: {size}")
     return porte_enum
-
-class ErrorWhileGettingExternalDataError(Exception):
-    pass
 
 class CartaoCNPJBuilder:
     def __init__(
