@@ -24,25 +24,6 @@ def municipio_data() -> dict:
         "updated_at": "2026-05-12T11:43:55.670378-03:00"
     }
 
-@pytest.fixture
-def fornecedor_to_update_with_cpf_data() -> dict:
-    return {
-        "LOJA": "01",
-        "CODIGO": "000013",
-        "NOME": "RESMA COMERCIAL DIST. DE PAPEIS LTDA              ",
-        "NOME_FANTASIA": "RESMA COMERCIAL DIST",
-        "CPF_CNPJ": "08325475498"
-    }
-
-@pytest.fixture
-def fornecedor_to_update_with_cnpj_data() -> dict:
-    return {
-        "LOJA": "01",
-        "CODIGO": "000013",
-        "NOME": "RESMA COMERCIAL DIST. DE PAPEIS LTDA              ",
-        "NOME_FANTASIA": "RESMA COMERCIAL DIST",
-        "CPF_CNPJ": "08626186000109"
-    }
 
 class TestGetMunicipioByName:
     url_municipio_by_name = "/api/v1/municipios/name/{municipio_name}"
