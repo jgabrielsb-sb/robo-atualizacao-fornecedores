@@ -2,9 +2,10 @@ from dataclasses import dataclass
 
 from config.settings import settings
 from app.infra.api_requester import (
-    FornecedoresAPIRequester, 
+    FornecedoresAPIRequester,
     ReceitaAPIRequester,
 )
+from app.infra.queue.rpc_queue_requester import RPCCartaoCNPJQueueRequester, QueueConfig
 
 @dataclass
 class InfraProvider:
@@ -16,5 +17,18 @@ class InfraProvider:
     def get_receita_api_requester(self) -> ReceitaAPIRequester:
         return ReceitaAPIRequester(
             base_url=settings.RECEITA_API_BASE_URL
+        )
+
+    def get_rpc_cartao_cnpj_queue_requester(self) -> RPCCartaoCNPJQueueRequester:
+        return RPCCartaoCNPJQueueRequester(
+            config=QueueConfig(
+                host=settings.RABBIT_HOST,
+                port=str(settings.RABBIT_PORT),
+                virtual_host=settings.RABBIT_VIRTUAL_HOST,
+                username=settings.RABBIT_USER,
+                password=settings.RABBIT_PASSWORD,
+                connection_name=settings.RABBIT_CONNECTION_NAME,
+                queue_name=settings.RABBIT_QUEUE_NAME,
+            )
         )
     
