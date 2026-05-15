@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     FORNECEDORES_API_BASE_URL: str
     RECEITA_API_BASE_URL: str
-    
+
     ENV: str = "dev"
 
     EMAIL_HOST: str
@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     EMAIL_IS_TLS: bool
     EMAIL_HOST_USER: str
     EMAIL_HOST_PASSWORD: str
+
+    RABBIT_HOST: str
+    RABBIT_PORT: int
+    RABBIT_VIRTUAL_HOST: str
+    RABBIT_USER: str
+    RABBIT_PASSWORD: str
+    RABBIT_QUEUE_NAME: str
+    RABBIT_CONNECTION_NAME: str
 
 
 settings = Settings()
