@@ -1,11 +1,53 @@
 from dataclasses import dataclass
 
-from app.infra.adapters import GetOptSimplesNacionalWithSelenium
+from app.infra.adapters import (
+    GetOptSimplesNacionalWithSelenium,
+    GetCNPJsToUpdateViaFornecedoresAPI,
+    UpdateFornecedorViaProtheusAPI,
+    GetCartaoCNPJViaQueueRequester,
+    MunicipioLookupViaFornecedoresAPI,
+    GetEnderecoViaReceitaAPIRequester,
+)
+
+from app.composition.infra import InfraProvider
 
 
 @dataclass
 class AdapterProvider:
+    def __init__(self):
+        self.infra_provider = InfraProvider()
+    
     def get_get_opt_simples_nacional_with_selenium_adapter(self) -> GetOptSimplesNacionalWithSelenium:
         return GetOptSimplesNacionalWithSelenium()
+
+    def get_get_municipio_via_fornecedores_api_adapter(self) -> MunicipioLookupViaFornecedoresAPI:
+        return MunicipioLookupViaFornecedoresAPI(
+            fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
+        )
+
+    def get_get_cartao_cnpj_via_queue_requester_adapter(self) -> GetCartaoCNPJViaQueueRequester:
+        return GetCartaoCNPJViaQueueRequester(
+            queue_requester=self.infra_provider.get_rpc_cartao_cnpj_queue_requester(),
+            municipio_lookup_port=self.get_get_municipio_via_fornecedores_api_adapter(),
+        )
+
+    def get_get_endereco_via_receita_api_requester_adapter(self) -> GetEnderecoViaReceitaAPIRequester:
+        return GetEnderecoViaReceitaAPIRequester(
+            municipio_lookup_port=self.get_get_municipio_via_fornecedores_api_adapter(),
+            receita_api_requester=self.infra_provider.get_receita_api_requester(),
+        )
+
+    def get_get_cnpjs_to_update_via_fornecedores_api_adapter(self) -> GetCNPJsToUpdateViaFornecedoresAPI:
+        return GetCNPJsToUpdateViaFornecedoresAPI(
+            fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
+        )
+
+    def get_update_fornecedor_via_protheus_api_adapter(self) -> UpdateFornecedorViaProtheusAPI:
+        return UpdateFornecedorViaProtheusAPI(
+            protheus_api_requester=self.infra_provider.get_protheus_api_requester(),
+        )
+
+
+    
 
     
