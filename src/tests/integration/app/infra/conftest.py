@@ -43,3 +43,13 @@ def fornecedor_to_update_with_cnpj_data() -> dict:
         "NOME_FANTASIA": "RESMA COMERCIAL DIST",
         "CPF_CNPJ": "08626186000109",
     }
+
+@pytest.fixture
+def fornecedor_to_update_with_invalid_identifier_data() -> dict:
+    return {
+        "LOJA": "01",
+        "CODIGO": "000013",
+        "NOME": "RESMA COMERCIAL DIST. DE PAPEIS LTDA",
+        "NOME_FANTASIA": "RESMA COMERCIAL DIST",
+        "CPF_CNPJ": "INVALID",
+    }
