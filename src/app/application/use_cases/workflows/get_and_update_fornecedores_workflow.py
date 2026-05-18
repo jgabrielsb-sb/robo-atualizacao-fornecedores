@@ -13,7 +13,7 @@ from app.domain.value_objects import CNPJ
 
 from app.application.ports import (
     GetCNPJsToUpdatePort,
-    FornecedorRepositoryPort,
+    UpdateFornecedorPort,
     BuildFornecedorPort,
 )
 
@@ -51,11 +51,11 @@ class GetAndUpdateFornecedoresWorkflow:
         self,
         get_cnpjs_to_update: GetCNPJsToUpdatePort,
         build_fornecedor: BuildFornecedorPort,
-        fornecedor_repository: FornecedorRepositoryPort,
+        update_fornecedor: UpdateFornecedorPort,
     ):
         self._get_cnpjs_to_update = get_cnpjs_to_update
         self._build_fornecedor = build_fornecedor
-        self._fornecedor_repository = fornecedor_repository
+        self._update_fornecedor = update_fornecedor
 
     def get_cnpjs_to_update(
         self,
@@ -129,7 +129,7 @@ class GetAndUpdateFornecedoresWorkflow:
     ) -> None:
         EVENT_NAME = UPDATE_FORNECEDOR_EVENT_NAME
         try:
-            result = self._fornecedor_repository.update(fornecedor)
+            result = self._update_fornecedor.update(fornecedor)
             logger.info(
                 "Successfully updated fornecedor",
                 extra={
