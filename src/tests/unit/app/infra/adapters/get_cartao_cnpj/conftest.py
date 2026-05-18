@@ -360,7 +360,90 @@ element_data_5 = {
     ),
 }
 
-DATA = [element_data_1, element_data_2, element_data_3, element_data_4, element_data_5]
+element_data_6 = {
+    "queue_response": {
+        "status": "ok",
+        "action": "cnpj.consultation",
+        "cnpj": "02356937000120",
+        "data": {
+            "uuid": "2b8a65dd-1883-4383-b068-194c0149dce6",
+            "cnpj": "02356937000120",
+            "legal_name": "MEDEIROS ENGENHARIA E ARQUITETURA LTDA",
+            "trade_name": "ENGENHARQ",
+            "type": "",
+            "size": "ME",
+            "opening_date": "1998-01-30",
+            "registration_status": "ACTIVE",
+            "registration_status_date": "2005-11-03",
+            "registration_status_reason": "",
+            "processing_status": "COMPLETED",
+            "processing_error": "",
+            "created_at": "2026-05-18T11:38:18.713544-03:00",
+            "updated_at": "2026-05-18T11:38:51.390845-03:00",
+            "legal_nature": {
+            "code": "2062",
+            "description": "Sociedade Empresária Limitada"
+            },
+            "address": {
+            "street": "av joao davino",
+            "number": "691",
+            "complement": "a",
+            "zip_code": "57035554",
+            "neighborhood": "jatiuca",
+            "city": "maceio",
+            "state": "al"
+            },
+            "has_pending_declaration": False,
+            "contacts": [
+            {
+                "type": "PHONE",
+                "value": "8233251183"
+            }
+            ],
+            "company_activities": [
+            {
+                "code": "7112000",
+                "description": "Serviços de engenharia",
+                "type": "PRIMARY"
+            }
+            ],
+            "ratification_declarations": [],
+            "has_overdue_boleto": False,
+            "das_payments": [],
+            "simples_nacional_status": "",
+            "simei_status": "",
+            "future_events_simples": "",
+            "future_events_simei": "",
+            "mei_trucker": "",
+            "tax_regime_periods": [],
+            "mei_registration_status": "",
+            "mei_registration_detail": ""
+        },
+        "cached": True
+        },
+    "expected_result": CartaoCNPJ(
+        porte=PorteEnum.ME,
+        razao_social="MEDEIROS ENGENHARIA E ARQUITETURA LTDA",
+        nome_fantasia="ENGENHARQ",
+        atividade_economica_principal_str="Serviços de engenharia",
+        telefone=Telefone(ddd=DDD(value="82"), numero="33251183"),
+        natureza_juridica="Sociedade Empresária Limitada",
+        endereco=Endereco(
+            endereco="av joao davino",
+            numero="691",
+            complemento="a",
+            cep=CEP(value="57035554"),
+            municipio=Municipio(
+                nome="MACEIO",
+                codigo_ibge=CodigoMunicipioIBGE(value="123459"),
+            ),
+        ),
+        situacao_cadastral=SituacaoCadastralEnum.ATIVA,
+    ),
+}
+
+
+DATA = [element_data_1, element_data_2, element_data_3, element_data_4, element_data_5, element_data_6]
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
