@@ -62,6 +62,7 @@ class CartaoCNPJBuilder:
             endereco=address["street"],
             numero=address["number"],
             complemento=address["complement"],
+            bairro=address["neighborhood"],
             cep=cep,
             municipio=municipio,
         )
@@ -98,6 +99,7 @@ class CartaoCNPJBuilder:
 
     def build(self, response: Dict[str, Any]) -> CartaoCNPJ:
         data = response["data"]
+        print(data["address"])
         phone = self._get_phone(data)
         return CartaoCNPJ(
             porte=_map_porte(data["size"]),

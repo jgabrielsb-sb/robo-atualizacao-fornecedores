@@ -85,7 +85,7 @@ class FornecedorUpdateOnProtheus(BaseModel):
     Nume_End: str
     Cmpl_End: str = ""
     Bair_For: str
-    Esta_For: str  # UF sigla, e.g. "AL"
+    Esta_For: str = "" # UF sigla, e.g. "AL"
     Codi_Mun: str  # IBGE code
     Muni_For: str
     CEP_Forn: str
@@ -131,6 +131,7 @@ class FornecedorUpdateOnProtheus(BaseModel):
         "DDD_Forn",
         "Tel_Forn",
         "Insc_Est",
+        "Esta_For",
         mode="before",
     )
     @classmethod

@@ -2,6 +2,7 @@ from .get_cnpjs_to_update_port import GetCNPJsToUpdatePort
 from .fornecedor import (
     BuildFornecedorPort,
     FornecedorRepositoryPort,
+    UpdateFornecedorPort,
     GetCartaoCNPJPort,
     GetOptSimplesNacionalPort,
     GetEnderecoPort,
