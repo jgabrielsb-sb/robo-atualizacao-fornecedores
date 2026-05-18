@@ -1,5 +1,6 @@
 
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.application.ports import (
     GetOptSimplesNacionalPort,

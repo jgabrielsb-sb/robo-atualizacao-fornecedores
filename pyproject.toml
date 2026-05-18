@@ -51,6 +51,7 @@ addopts = [
     "--html=report.html",
 ]
 markers = [
+  "unit: marks tests as unit tests",
   "integration_tests: marks tests as integration tests",
   "real_case_tests: marks tests as real case tests",
 ]

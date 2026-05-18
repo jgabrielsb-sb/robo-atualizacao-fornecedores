@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.enums import PorteEnum, InvalidPorteError
 

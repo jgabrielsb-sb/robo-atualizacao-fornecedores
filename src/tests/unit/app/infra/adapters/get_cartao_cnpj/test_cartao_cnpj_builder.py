@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.infra.adapters.get_cartao_cnpj import CartaoCNPJBuilder
 from conftest import DATA

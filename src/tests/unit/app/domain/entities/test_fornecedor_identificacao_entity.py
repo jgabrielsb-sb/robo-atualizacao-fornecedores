@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.entities.fornecedor.fornecedor_identificacao_entity import FornecedorIdentificacao
 from app.domain.value_objects import CNPJ, InvalidCNPJLengthError

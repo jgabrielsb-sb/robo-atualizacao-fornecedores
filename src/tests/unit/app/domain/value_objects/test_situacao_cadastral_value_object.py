@@ -1,6 +1,7 @@
 from app.domain.value_objects import SituacaoCadastral
 
 import pytest
+pytestmark = pytest.mark.unit
 
 def test_should_create_situacao_cadastral_with_empty_motivo_bloqueio():
     situacao_cadastral = SituacaoCadastral.create(

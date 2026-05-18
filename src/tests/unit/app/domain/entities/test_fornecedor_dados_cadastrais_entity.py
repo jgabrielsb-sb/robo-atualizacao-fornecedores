@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.entities.fornecedor.fornecedor_dados_cadastrais_entity import FornecedorDadosCadastrais
 from app.domain.enums import FederacaoEnum, PorteEnum, TipoPessoaEnum, VinculoSebraeEnum

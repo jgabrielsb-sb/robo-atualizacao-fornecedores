@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.value_objects import Telefone
 from app.domain.value_objects.ddd_value_object import DDD

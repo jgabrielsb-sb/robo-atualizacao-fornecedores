@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.value_objects import CodigoMunicipioIBGE, Municipio
 

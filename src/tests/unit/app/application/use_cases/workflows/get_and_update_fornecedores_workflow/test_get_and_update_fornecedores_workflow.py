@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.application.use_cases.workflows.get_and_update_fornecedores_workflow import (
     GetAndUpdateFornecedoresWorkflow,
@@ -8,7 +9,7 @@ from tests.unit.app.application.use_cases.workflows.get_and_update_fornecedores_
     make_fake_cnpj,
     FakeGetCNPJsToUpdatePort,
     FakeBuildFornecedorPort,
-    FakeFornecedorRepositoryPort,
+    FakeUpdateFornecedorPort,
 )
 
 
@@ -23,7 +24,7 @@ def make_workflow(
             cnpjs=cnpjs, error=get_error
         ),
         build_fornecedor=FakeBuildFornecedorPort(fail_fornecedores_ids=fail_build_ids),
-        fornecedor_repository=FakeFornecedorRepositoryPort(fail_fornecedores_ids=fail_update_ids),
+        update_fornecedor=FakeUpdateFornecedorPort(fail_fornecedores_ids=fail_update_ids),
     )
 
 

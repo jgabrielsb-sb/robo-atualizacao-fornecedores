@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.entities.fornecedor.fornecedor_dados_contato_entity import FornecedorDadosContato
 from app.domain.value_objects import DDD

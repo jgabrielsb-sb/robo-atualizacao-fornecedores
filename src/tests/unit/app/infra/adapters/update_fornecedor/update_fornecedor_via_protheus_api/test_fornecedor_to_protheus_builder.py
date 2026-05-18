@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.unit
 from app.domain.enums import SituacaoCadastralEnum, TipoPessoaEnum
 from app.infra.adapters.update_fornecedor.update_fornecedor_via_protheus_api.fornecedor_to_protheus_builder import (
     FornecedorToProtheusBuilder,

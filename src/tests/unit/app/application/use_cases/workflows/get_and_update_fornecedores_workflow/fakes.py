@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from app.application.ports import (
     GetCNPJsToUpdatePort,
     BuildFornecedorPort,
-    FornecedorRepositoryPort,
+    UpdateFornecedorPort,
 )
 from app.domain.value_objects import CNPJ
 
@@ -45,12 +45,9 @@ class FakeBuildFornecedorPort(BuildFornecedorPort):
         return FakeFornecedor(id=id_)
 
 
-class FakeFornecedorRepositoryPort(FornecedorRepositoryPort):
+class FakeUpdateFornecedorPort(UpdateFornecedorPort):
     def __init__(self, fail_fornecedores_ids: list[int] | None = None):
         self._fail_fornecedores_ids = fail_fornecedores_ids or []
-
-    def create(self):
-        pass
 
     def update(self, fornecedor: FakeFornecedor):
         if fornecedor.id in self._fail_fornecedores_ids:

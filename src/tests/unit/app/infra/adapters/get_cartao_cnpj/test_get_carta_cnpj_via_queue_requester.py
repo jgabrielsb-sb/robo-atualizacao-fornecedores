@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.domain.value_objects import CNPJ, CartaoCNPJ
 from app.infra.adapters.get_cartao_cnpj.get_cartao_cnpj_via_queue_requester import GetCartaoCNPJViaQueueRequester

@@ -1,6 +1,7 @@
 from app.domain.value_objects import Endereco, Municipio, CEP, CodigoMunicipioIBGE
 
 import pytest
+pytestmark = pytest.mark.unit
 
 @pytest.fixture
 def municipio():

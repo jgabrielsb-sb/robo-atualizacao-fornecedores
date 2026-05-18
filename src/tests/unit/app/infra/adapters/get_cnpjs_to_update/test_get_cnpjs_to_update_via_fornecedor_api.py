@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 
 from app.infra.adapters.get_cnpjs_to_update import (
     GetCNPJsToUpdateViaFornecedoresAPI,

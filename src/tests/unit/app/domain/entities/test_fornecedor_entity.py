@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unit
 from uuid import UUID
 
 from app.domain.entities.fornecedor.fornecedor_entity import Fornecedor
