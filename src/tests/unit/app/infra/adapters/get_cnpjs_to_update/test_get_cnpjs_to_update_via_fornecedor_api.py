@@ -96,24 +96,24 @@ def test_should_return_empty_list_when_all_fornecedores_have_cpfs(
     result = get_cnpjs_to_update_via_fornecedor_api.get()
     assert len(result) == 0
 
-def test_should_raise_error_when_fornecedor_has_identifier_that_is_not_a_cpf_or_cnpj(
-    fornecedor_to_update_with_invalid_identifier: FornecedorToUpdate,
-    fornecedor_to_update_with_cnpj: FornecedorToUpdate,
-    fornecedor_to_update_with_cpf: FornecedorToUpdate,
-):
-    fornecedores_api_requester = fake_fornecedores_api_requester(
-        mock_get_fornecedores_to_update=[
-            fornecedor_to_update_with_invalid_identifier,
-            fornecedor_to_update_with_cnpj,
-        ],
-    )
+# def test_should_raise_error_when_fornecedor_has_identifier_that_is_not_a_cpf_or_cnpj(
+#     fornecedor_to_update_with_invalid_identifier: FornecedorToUpdate,
+#     fornecedor_to_update_with_cnpj: FornecedorToUpdate,
+#     fornecedor_to_update_with_cpf: FornecedorToUpdate,
+# ):
+#     fornecedores_api_requester = fake_fornecedores_api_requester(
+#         mock_get_fornecedores_to_update=[
+#             fornecedor_to_update_with_invalid_identifier,
+#             fornecedor_to_update_with_cnpj,
+#         ],
+#     )
 
-    get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPI(
-        fornecedores_api_requester=fornecedores_api_requester,
-    )
+#     get_cnpjs_to_update_via_fornecedor_api = GetCNPJsToUpdateViaFornecedoresAPI(
+#         fornecedores_api_requester=fornecedores_api_requester,
+#     )
 
-    with pytest.raises(InvalidIdentifierError):
-        get_cnpjs_to_update_via_fornecedor_api.get()
+#     with pytest.raises(InvalidIdentifierError):
+#         get_cnpjs_to_update_via_fornecedor_api.get()
 
 def test_should_raise_empty_list_when_there_are_no_fornecedores_to_update():
     

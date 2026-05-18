@@ -1,3 +1,5 @@
+import logging
+
 from app.infra.api_requester.fornecedores_api_requester import FornecedoresAPIRequester
 from app.domain.value_objects import (
     CNPJ, 
@@ -5,6 +7,8 @@ from app.domain.value_objects import (
     CPF, 
     InvalidCPFError,
 )
+
+logger = logging.getLogger(__name__)
 
 class GetCNPJsToUpdateViaFornecedoresAPIError(Exception):
     pass
@@ -43,8 +47,7 @@ class GetCNPJsToUpdateViaFornecedoresAPI:
                 cnpj = CNPJ.create(cnpj=fornecedor.CPF_CNPJ)
                 cnpjs.append(cnpj)
             except InvalidCNPJError:
-                raise InvalidIdentifierError(
-                    f"The identifier {fornecedor.CPF_CNPJ} is not a valid CNPJ nor a valid CPF"
-                )
+                logger.warning(f"The identifier {fornecedor.CPF_CNPJ} is not a valid CNPJ nor a valid CPF")
+                pass
 
         return cnpjs
