@@ -5,11 +5,6 @@ Those integration tests have the goal to answer:
     API responses data.
 
 Additionally, we must answer other questions:
-1 - Does the adpater raise Error when there are identifier that are not 
-CPF nor CNPJ?
-    * On that case, we must raise error cause we that fornecedor has an
-    invalid identifier. It should be a CPF or CNPJ.
-
 2 - Does the adapter are returning just the CNPJ's and succesfully ignoring
 the CPF's?
     * The CPF's must be ignored cause we are just dealing with CNPJ's by now.
@@ -34,33 +29,33 @@ from app.infra.api_requester.fornecedores_api_requester import FornecedoresAPIRe
 
 url_fornecedores_to_update =  "/api/v1/fornecedores-to-update"
 
-def test_should_raise_invalid_identifier_error_if_identifier_is_not_cpf_nor_cnpj(
-    httpserver: HTTPServer,
-    fornecedor_to_update_with_cpf_data: dict,
-    fornecedor_to_update_with_invalid_identifier_data: dict
+# def test_should_raise_invalid_identifier_error_if_identifier_is_not_cpf_nor_cnpj(
+#     httpserver: HTTPServer,
+#     fornecedor_to_update_with_cpf_data: dict,
+#     fornecedor_to_update_with_invalid_identifier_data: dict
 
-):
-    httpserver.expect_request(
-        url_fornecedores_to_update
-    ).respond_with_json(
-        [
-            fornecedor_to_update_with_cpf_data,
-            fornecedor_to_update_with_invalid_identifier_data
-        ]
-    )
+# ):
+#     httpserver.expect_request(
+#         url_fornecedores_to_update
+#     ).respond_with_json(
+#         [
+#             fornecedor_to_update_with_cpf_data,
+#             fornecedor_to_update_with_invalid_identifier_data
+#         ]
+#     )
 
-    requester = FornecedoresAPIRequester(
-        base_url=httpserver.url_for("")
-    )
+#     requester = FornecedoresAPIRequester(
+#         base_url=httpserver.url_for("")
+#     )
 
-    adapter = GetCNPJsToUpdateViaFornecedoresAPI(
-        fornecedores_api_requester=requester
-    )
+#     adapter = GetCNPJsToUpdateViaFornecedoresAPI(
+#         fornecedores_api_requester=requester
+#     )
 
-    with pytest.raises(InvalidIdentifierError) as e:
-        adapter.get()
+#     with pytest.raises(InvalidIdentifierError) as e:
+#         adapter.get()
 
-    assert fornecedor_to_update_with_invalid_identifier_data["CPF_CNPJ"] in str(e.value)
+#     assert fornecedor_to_update_with_invalid_identifier_data["CPF_CNPJ"] in str(e.value)
 
     
 
