@@ -1,4 +1,4 @@
-.PHONY: clean run-unit-tests run-fast-tests run-real-cases run-all-tests run
+.PHONY: clean run-unit-tests run-integration-tests run-fast-tests run-real-cases run-all-tests run
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -r {} +
@@ -6,7 +6,10 @@ clean:
 	find . -type f -name "*~" -delete
 
 run-unit-tests:
-	uv run pytest --html=report.html -m "unit"
+	uv run pytest -vv --html=report.html -m "unit"
+
+run-integration-tests:
+	uv run pytest -vv --html=report.html -m "integration_tests"
 
 run-fast-tests:
 	uv run pytest --html=report.html -m "not real_case_tests"

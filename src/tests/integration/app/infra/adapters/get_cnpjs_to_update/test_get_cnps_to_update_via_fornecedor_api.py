@@ -20,6 +20,7 @@ the CPF's?
 """
 from http import HTTPStatus
 import pytest 
+pytestmark = pytest.mark.integration_tests
 from pytest_httpserver import HTTPServer
 
 from app.domain.value_objects import CNPJ

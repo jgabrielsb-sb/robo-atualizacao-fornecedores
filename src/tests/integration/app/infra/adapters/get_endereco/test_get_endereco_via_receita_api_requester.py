@@ -15,6 +15,7 @@ We must test:
     - test_should_raise_error_while_getting_external_data_error_if_municipio_port_fails()
 """
 import pytest
+pytestmark = pytest.mark.integration_tests
 from pytest_httpserver import HTTPServer
 from app.infra.api_requester import ReceitaAPIRequester
 
