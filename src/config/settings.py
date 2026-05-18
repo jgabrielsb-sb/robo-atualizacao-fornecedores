@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     FORNECEDORES_API_BASE_URL: str
     RECEITA_API_BASE_URL: str
 
+    PROTHEUS_API_BASE_URL: str
+    PROTHEUS_C_AUTH: str
+    PROTHEUS_AUTHORIZATION_TOKEN: str
+
     ENV: str = "dev"
 
     EMAIL_HOST: str

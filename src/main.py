@@ -1,9 +1,44 @@
-from app.composition.adapter import AdapterProvider
-from app.composition.infra import InfraProvider
-from app.domain.value_objects import CNPJ
+from app.composition.container import Container
+from app.infra.api_requester.protheus_api_requester.models import (
+    ClassificacaoProtheus,
+    FederacaoProtheus,
+    FornecedorUpdateOnProtheus,
+    SimplesNacionalProtheus,
+    SimNaoProtheus,
+    TipoFornecedorProtheus,
+    VinculoSebraeProtheus,
+    BancosProtheus,
+)
 
-adapter_provider = AdapterProvider()
-infra_provider = InfraProvider()
+container = Container()
+protheus_requester = container.infra_provider.get_protheus_api_requester()
 
-receita_api_requester = infra_provider.get_receita_api_requester()
-print(receita_api_requester.get_company(CNPJ("28738609000181")))
+fornecedor = FornecedorUpdateOnProtheus(
+    Nome_For="ZUCCA BUFFET LTDA.",
+    Nome_Red="ZUCCA",
+    CNPJ_For="26235452000146",
+    Ende_For="Rua Olavo Macedo Ribeiro",
+    Nume_End="37",
+    Cmpl_End="",
+    Bair_For="Jatiuca",
+    Esta_For="AL",
+    Codi_Mun="04302",
+    Muni_For="MACEIO",
+    CEP_Forn="57036830",
+    DDD_Forn="82",
+    Tel_Forn="999683300",
+    Ema_Forn="brenolopesdefarias@gmail.com",
+    Tipo_Forn=TipoFornecedorProtheus.PESSOA_JURIDICA,
+    Classifi=ClassificacaoProtheus.MEI,
+    Insc_Est="ISENTO",
+    For_Ativ=SimNaoProtheus.SIM,
+    Simples=SimplesNacionalProtheus.NAO,
+    Cod_Rete="1708",
+    Vinc_Seb=VinculoSebraeProtheus.SEM_VINCULO,
+    Federaca=FederacaoProtheus.NAO,
+    Cooperat=SimNaoProtheus.NAO,
+    
+)
+
+result = protheus_requester.update_fornecedor(fornecedor)
+print(result)

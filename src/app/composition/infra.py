@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from config.settings import settings
 from app.infra.api_requester import (
     FornecedoresAPIRequester,
+    ProtheusAPIRequester,
     ReceitaAPIRequester,
 )
 from app.infra.queue.rpc_queue_requester import RPCCartaoCNPJQueueRequester, QueueConfig
@@ -17,6 +18,13 @@ class InfraProvider:
     def get_receita_api_requester(self) -> ReceitaAPIRequester:
         return ReceitaAPIRequester(
             base_url=settings.RECEITA_API_BASE_URL
+        )
+
+    def get_protheus_api_requester(self) -> ProtheusAPIRequester:
+        return ProtheusAPIRequester(
+            base_url=settings.PROTHEUS_API_BASE_URL,
+            c_auth=settings.PROTHEUS_C_AUTH,
+            authorization_token=settings.PROTHEUS_AUTHORIZATION_TOKEN,
         )
 
     def get_rpc_cartao_cnpj_queue_requester(self) -> RPCCartaoCNPJQueueRequester:
