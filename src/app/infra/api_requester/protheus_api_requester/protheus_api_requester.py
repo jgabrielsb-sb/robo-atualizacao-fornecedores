@@ -33,7 +33,6 @@ class ProtheusAPIRequester:
             "Content-Type": "application/json",
             "Cache-Control": "no-cache",
         }
-        print("headers", self._headers)
 
     def update_fornecedor(
         self,
