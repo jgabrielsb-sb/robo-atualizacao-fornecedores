@@ -75,7 +75,6 @@ def test_should_return_just_cnpjs_when_some_fornecedores_have_cpfs(
 
     result = get_cnpjs_to_update_via_fornecedor_api.get()
     
-    print(result)
     assert len(result) == 1
     assert isinstance(result[0], CNPJ)
 

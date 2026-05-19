@@ -14,7 +14,6 @@ from app.domain.value_objects import (
     DDD,
     Endereco,
     Municipio,
-    SituacaoCadastral,
 )
 
 
@@ -45,13 +44,10 @@ def identificacao():
 
 @pytest.fixture
 def dados_cadastrais():
-    situacao_cadastral = SituacaoCadastral.create(
-        ativo=True, bloqueado=False, motivo_bloqueio=None
-    )
     return FornecedorDadosCadastrais.create(
         porte="EMPRESA DE PEQUENO PORTE",
         opt_simples_nacional=True,
-        situacao_cadastral=situacao_cadastral,
+        situacao_cadastral="ATIVA",
         tipo_pessoa="PESSOA FISICA",
         vinculo_sebrae="SEM VINCULO",
         federacao="NAO",
