@@ -146,14 +146,14 @@ class FornecedorBuilderService(BuildFornecedorPort):
                 porte=cartao_cnpj.porte,
                 opt_simples_nacional=opt_simples_nacional,
                 situacao_cadastral=cartao_cnpj.situacao_cadastral,
-                tipo_pessoa=self._get_tipo_pessoa(cartao_cnpj.atividade_economica_principal_str),
+                tipo_pessoa=self._get_tipo_pessoa(cartao_cnpj.atividade_economica_principal_str or ""),
                 vinculo_sebrae=self._get_vinculo_sebrae(),
                 federacao=self._get_federacao(),
                 cooperativa=self._get_cooperativa(cartao_cnpj.natureza_juridica),
                 codigo_retencao=self._get_codigo_retencao(self._get_cooperativa(cartao_cnpj.natureza_juridica)),
             ),
             dados_contato=FornecedorDadosContato.create(
-                ddd=cartao_cnpj.telefone.ddd,
+                ddd=cartao_cnpj.telefone.ddd if cartao_cnpj.telefone else None,
             ),
         )
             

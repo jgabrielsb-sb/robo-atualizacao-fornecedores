@@ -29,7 +29,7 @@ class Fornecedor:
  
     def __post_init__(self):
         self.validate_types()
-    
+        
     @classmethod
     def create(
         cls,
@@ -46,6 +46,8 @@ class Fornecedor:
             dados_cadastrais=dados_cadastrais,
             dados_contato=dados_contato,
         )
+
+    
 
 
 

@@ -1,50 +1,29 @@
+import logging
+import app.logging.logger
+import schedule
+import time
+
 from app.composition.container import Container
-from app.infra.api_requester.protheus_api_requester.models import (
-    ClassificacaoProtheus,
-    FederacaoProtheus,
-    FornecedorUpdateOnProtheus,
-    SimplesNacionalProtheus,
-    SimNaoProtheus,
-    TipoFornecedorProtheus,
-    VinculoSebraeProtheus,
-    BancosProtheus,
-)
 
 container = Container()
+use_case = container.get_get_and_update_fornecedores_workflow()
 
-result = container.adapter_provider.get_get_cnpjs_to_update_via_fornecedores_api_adapter().get()
-print(result)
+logger = logging.getLogger("main")
 
+def run_workflow():
+    logger.info("Running workflow")
+    use_case.run()
 
+schedule.every().second.do(run_workflow)
 
-# protheus_requester = container.infra_provider.get_protheus_api_requester()
+if __name__ == "__main__":
+    try:
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+    except Exception as e:
+        logger.critical("CRITICAL System Error", exc_info=True)
+        raise e
+    finally:
+        logger.info("System shutdown complete")
 
-# fornecedor = FornecedorUpdateOnProtheus(
-#     Nome_For="ZUCCA BUFFET LTDA.",
-#     Nome_Red="ZUCCA",
-#     CNPJ_For="26235452000146",
-#     Ende_For="Rua Olavo Macedo Ribeiro",
-#     Nume_End="37",
-#     Cmpl_End="",
-#     Bair_For="Jatiuca",
-#     Esta_For="AL",
-#     Codi_Mun="04302",
-#     Muni_For="MACEIO",
-#     CEP_Forn="57036830",
-#     DDD_Forn="82",
-#     Tel_Forn="999683300",
-#     Ema_Forn="brenolopesdefarias@gmail.com",
-#     Tipo_Forn=TipoFornecedorProtheus.PESSOA_JURIDICA,
-#     Classifi=ClassificacaoProtheus.MEI,
-#     Insc_Est="ISENTO",
-#     For_Ativ=SimNaoProtheus.SIM,
-#     Simples=SimplesNacionalProtheus.NAO,
-#     Cod_Rete="1708",
-#     Vinc_Seb=VinculoSebraeProtheus.SEM_VINCULO,
-#     Federaca=FederacaoProtheus.NAO,
-#     Cooperat=SimNaoProtheus.NAO,
-    
-# )
-
-# result = protheus_requester.update_fornecedor(fornecedor)
-# print(result)
