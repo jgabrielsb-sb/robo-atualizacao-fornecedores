@@ -47,7 +47,7 @@ class GetCNPJsToUpdateViaFornecedoresAPI:
                 cnpj = CNPJ.create(cnpj=fornecedor.CPF_CNPJ)
                 cnpjs.append(cnpj)
             except InvalidCNPJError:
-                logger.warning(f"The identifier {fornecedor.CPF_CNPJ} is not a valid CNPJ nor a valid CPF")
+                #logger.warning(f"The identifier {fornecedor.CPF_CNPJ} is not a valid CNPJ nor a valid CPF")
                 pass
 
         return cnpjs
