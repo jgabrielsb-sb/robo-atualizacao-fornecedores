@@ -11,7 +11,7 @@ class CartaoCNPJ(BaseModel):
     situacao_cadastral: SituacaoCadastralEnum
     atividade_economica_principal_str: Optional[str]
     natureza_juridica: str
-    telefone: Telefone
+    telefone: Optional[Telefone] = None
     nome_fantasia: Optional[str] = None
     endereco: Optional[Endereco] = None
     
