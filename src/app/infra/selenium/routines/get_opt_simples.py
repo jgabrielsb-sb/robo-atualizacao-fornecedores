@@ -53,4 +53,3 @@ def get_opt_simples(cnpj: str) -> bool:
 
 if __name__ == "__main__":
     cnpj = "28738609000181"
-    print(get_opt_simples(cnpj))
