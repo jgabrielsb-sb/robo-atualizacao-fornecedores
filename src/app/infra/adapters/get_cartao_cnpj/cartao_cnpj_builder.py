@@ -98,7 +98,11 @@ class CartaoCNPJBuilder:
         return phone_contact["value"] if phone_contact else None
 
     def build(self, response: Dict[str, Any]) -> CartaoCNPJ:
-        data = response["data"]
+        try:
+            data = response["data"]
+        except KeyError:
+            raise ValueError(f"error while trying to get 'data' field from the response: {response}") from KeyError
+            
         phone = self._get_phone(data)
         return CartaoCNPJ(
             porte=_map_porte(data["size"]),
