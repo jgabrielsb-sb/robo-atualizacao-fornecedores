@@ -25,3 +25,7 @@ def test_should_raise_error_when_ddd_is_wrong_type():
     # int is neither str nor DDD → TypeError from DDD.from_value
     with pytest.raises(TypeError):
         FornecedorDadosContato.create(ddd=11)
+
+def test_should_create_fornecedor_dados_contato_from_none():
+    contato = FornecedorDadosContato.create(ddd=None)
+    assert contato.ddd is None

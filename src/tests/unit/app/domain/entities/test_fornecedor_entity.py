@@ -121,3 +121,20 @@ def test_should_raise_error_when_types_are_wrong(
             dados_contato="not-dados-contato",
         )
     assert "dados_contato" in str(e.value)
+
+def test_should_create_fornecedor_with_empty_dados_contato(
+    endereco: Endereco,
+    identificacao: FornecedorIdentificacao,
+    dados_cadastrais: FornecedorDadosCadastrais,
+):
+    fornecedor = Fornecedor.create(
+        endereco=endereco,
+        identificacao=identificacao,
+        dados_cadastrais=dados_cadastrais,
+        dados_contato=FornecedorDadosContato.create(ddd=None),
+    )
+    assert isinstance(fornecedor.id, UUID)
+    assert fornecedor.endereco == endereco
+    assert fornecedor.identificacao == identificacao
+    assert fornecedor.dados_cadastrais == dados_cadastrais
+    assert fornecedor.dados_contato.ddd is None
