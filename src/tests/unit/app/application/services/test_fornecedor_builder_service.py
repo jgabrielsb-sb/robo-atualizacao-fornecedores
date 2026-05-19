@@ -62,6 +62,8 @@ def endereco() -> Endereco:
         complemento="test complemento",
         cep=CEP.create(cep="31310240"),
         municipio=Municipio.create(nome="Belo Horizonte", codigo_ibge=CodigoMunicipioIBGE.create(ibge_code="3106200")),
+        bairro="test bairro",
+        uf="test uf",
     )
 
 @pytest.fixture
@@ -135,6 +137,8 @@ def test_should_return_mixed_endereco_from_alternative_source_and_from_cartao_cn
         complemento="test complemento",
         cep=CEP.create(cep="31310240"),
         municipio=Municipio.create(nome="Belo Horizonte", codigo_ibge=CodigoMunicipioIBGE.create(ibge_code="3106200")),
+        bairro="test bairro",
+        uf="test uf",
     )
     assert fake_get_endereco._get_times_called == 1
 
