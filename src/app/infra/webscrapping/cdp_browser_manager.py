@@ -112,13 +112,4 @@ class CdpBrowserManager:
                 self._process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 self._process.kill()
-
-if __name__ == "__main__":
-    async def main():
-        async with CdpBrowserManager() as browser:
-            page = browser.page
-            await page.goto("https://www.google.com")
-            print(await page.content)
-
-    asyncio.run(main())
     
