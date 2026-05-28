@@ -16,14 +16,13 @@ import time
     add_arguments=ARGUMENTS,
     output=None,
     wait_for_complete_page_load=True,
-    headless=False
+    headless=True
 )
 def scrape_opt_simples(
     driver: Driver,
     cnpj: str,
 ):
     driver.get(URL)
-    time.sleep(100000000)
     driver.type("#Cnpj", cnpj)
     driver.click("button.h-captcha")
     driver.long_random_sleep()
