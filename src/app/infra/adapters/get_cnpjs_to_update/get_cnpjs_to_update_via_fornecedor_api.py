@@ -7,6 +7,7 @@ from app.domain.value_objects import (
     CPF, 
     InvalidCPFError,
 )
+from app.application.ports import GetCNPJsToUpdatePort
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class GetCNPJsToUpdateViaFornecedoresAPIError(Exception):
 class InvalidIdentifierError(GetCNPJsToUpdateViaFornecedoresAPIError):
     pass
 
-class GetCNPJsToUpdateViaFornecedoresAPI:
+class GetCNPJsToUpdateViaFornecedoresAPI(GetCNPJsToUpdatePort):
     def __init__(
         self,
         fornecedores_api_requester: FornecedoresAPIRequester,
