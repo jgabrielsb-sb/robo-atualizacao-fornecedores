@@ -3,6 +3,7 @@ from .enums import (
     TipoPessoaEnum, 
     VinculoSebraeEnum, 
     FederacaoEnum, 
+    SituacaoCadastralEnum,
     InvalidFederacaoError,
 )
 from .entities import (

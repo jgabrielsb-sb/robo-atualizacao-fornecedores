@@ -15,7 +15,6 @@ class InvalidFornecedorDadosCadastraisError(Exception):
 
 @dataclass(frozen=True)
 class FornecedorDadosCadastrais:
-    porte: PorteEnum
     opt_simples_nacional: bool
     situacao_cadastral: SituacaoCadastralEnum
     tipo_pessoa: TipoPessoaEnum
@@ -23,9 +22,10 @@ class FornecedorDadosCadastrais:
     federacao: FederacaoEnum
     cooperativa: bool
     codigo_retencao: str
+    porte: PorteEnum | None = None
 
     def __post_init__(self):
-        if not isinstance(self.porte, PorteEnum):
+        if self.porte and not isinstance(self.porte, PorteEnum):
             raise TypeError("porte must be a PorteEnum")
         if not isinstance(self.opt_simples_nacional, bool):
             raise TypeError("opt_simples_nacional must be a bool")
@@ -46,7 +46,7 @@ class FornecedorDadosCadastrais:
     def create(
         cls,
         *,
-        porte: str | PorteEnum,
+        porte: PorteEnum | None,
         opt_simples_nacional: bool,
         situacao_cadastral: str | SituacaoCadastralEnum,
         tipo_pessoa: str | TipoPessoaEnum,
@@ -56,7 +56,7 @@ class FornecedorDadosCadastrais:
         codigo_retencao: str,
     ) -> 'FornecedorDadosCadastrais':
         return cls(
-            porte=PorteEnum.from_value(porte),
+            porte=PorteEnum.from_value(porte) if porte else None,
             opt_simples_nacional=opt_simples_nacional,
             situacao_cadastral=SituacaoCadastralEnum.from_value(situacao_cadastral),
             tipo_pessoa=TipoPessoaEnum.from_value(tipo_pessoa),

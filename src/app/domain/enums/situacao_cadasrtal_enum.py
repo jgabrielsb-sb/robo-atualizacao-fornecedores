@@ -11,6 +11,7 @@ def _normalize(s: str) -> str:
     return "".join(c for c in result if unicodedata.category(c) != "Mn")
 
 class SituacaoCadastralEnum(Enum):
+    NULA = "NULA"
     ATIVA = "ATIVA"
     INAPTA = "INAPTA"
     SUSPENSA = "SUSPENSA"
