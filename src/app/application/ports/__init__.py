@@ -9,3 +9,4 @@ from .fornecedor import (
 )
 
 from .municipio_lookup_port import MunicipioLookupPort
+from .get_atividade_economica_description_port import GetAtividadeEconomicaDescriptionPort
