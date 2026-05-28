@@ -12,6 +12,11 @@ class FornecedorToUpdate(BaseModel):
     NOME_FANTASIA: str
     CPF_CNPJ: str
 
+class Cnae(BaseModel):
+    id: int
+    code: str
+    description: str
+
 class FornecedoresAPIRequester:
     def __init__(
         self,
@@ -72,6 +77,27 @@ class FornecedoresAPIRequester:
                 f"Response text: {response.text}"
             )
 
+    def get_cnae_by_code(self, code: str) -> Cnae:
+        """
+        :raises NotFoundError: if the CNAE is not found.
+        :raises APIRequesterException: if the request fails.
+        """
+        url = f"{self._base_url}/api/v1/cnaes/code/{code}"
+        print(url)
+        response = requests.get(url)
+        status_code = response.status_code
 
-        
+        if status_code == HTTPStatus.OK:
+            data = response.json()
+            return Cnae(**data)
+        elif status_code == HTTPStatus.NOT_FOUND:
+            raise NotFoundError(f"CNAE not found by code: --{code}--")
+        else:
+            raise APIRequesterException(
+                f"Failed to get CNAE by code: {code} \n"
+                f"Status Code: {status_code} \n"
+                f"Response text: {response.text}"
+            )
+
+
 
