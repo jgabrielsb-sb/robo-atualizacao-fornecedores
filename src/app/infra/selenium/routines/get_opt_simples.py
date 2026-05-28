@@ -9,20 +9,21 @@ ARGUMENTS = [
     "--disable-blink-features=AutomationControlled",
 ]
 
-
+import time
 @browser(
     user_agent=UserAgent.HASHED,
     lang=Lang.English,
     add_arguments=ARGUMENTS,
     output=None,
     wait_for_complete_page_load=True,
-    headless=True
+    headless=False
 )
 def scrape_opt_simples(
     driver: Driver,
     cnpj: str,
 ):
     driver.get(URL)
+    time.sleep(100000000)
     driver.type("#Cnpj", cnpj)
     driver.click("button.h-captcha")
     driver.long_random_sleep()
@@ -53,3 +54,4 @@ def get_opt_simples(cnpj: str) -> bool:
 
 if __name__ == "__main__":
     cnpj = "28738609000181"
+    get_opt_simples(cnpj)

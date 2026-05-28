@@ -1,0 +1,99 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Mon, 25 May 2026 18:20:55 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=2817",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"challenge_prompt\": \"Select all items that help clean things\",\n  \"coordinates\": [\n    {\"box_2d\": [0, 2]},\n    {\"box_2d\": [2, 0]}\n  ]\n}",
+            "thought": null,
+            "thought_signature": "EjQKMgEMOdbH3jjAV9-Ps93tm2F4iwjmdKHbeXE5xwmA6mIKNTEJODDbjUXa7SsndJUKPE96",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.1-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "BJMUatKmMbGUmtkPsu-vmAk",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 56,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 1256,
+    "prompt_tokens_details": [
+      {
+        "modality": "IMAGE",
+        "token_count": 1102
+      },
+      {
+        "modality": "TEXT",
+        "token_count": 154
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 1312,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "challenge_prompt": "Select all items that help clean things",
+    "coordinates": [
+      {
+        "box_2d": [
+          0,
+          2
+        ]
+      },
+      {
+        "box_2d": [
+          2,
+          0
+        ]
+      }
+    ]
+  }
+}
