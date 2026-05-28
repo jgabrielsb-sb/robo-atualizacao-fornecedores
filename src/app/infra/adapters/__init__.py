@@ -11,6 +11,8 @@ from .municipio_lookup import MunicipioLookupViaFornecedoresAPI
 from .exceptions import ErrorWhileGettingExternalDataError
 from .get_endereco import GetEnderecoViaReceitaAPIRequester
 from .update_fornecedor import UpdateFornecedorViaProtheusAPI
+from .get_atividade_economica_description import GetAtividadeEconomicaDescriptionViaFornecedoresAPI
+from .build_fornecedor import BuildFornecedorViaReceitaAPI
 __all__ = [
     "GetOptSimplesNacionalWithSelenium",
     "GetCartaoCNPJViaQueueRequester",
@@ -20,4 +22,5 @@ __all__ = [
     "GetEnderecoViaReceitaAPIRequester",
     "UpdateFornecedorViaProtheusAPI",
     "MunicipioLookupViaFornecedoresAPI",
+    "GetAtividadeEconomicaDescriptionViaFornecedoresAPI",
 ]
