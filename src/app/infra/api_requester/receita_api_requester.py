@@ -7,17 +7,17 @@ from app.domain.value_objects import CNPJ
 from app.infra.api_requester.exceptions import APIRequesterException, NotFoundError
 
 class ReceitaAPIGetCompanyResponse(BaseModel):
-    CNPJ: Optional[str] = None  
-    NOME_EMPRESARIAL: Optional[str] = None
+    CNPJ: str  
+    NOME_EMPRESARIAL: str
     NOME_FANTASIA: Optional[str] = None
-    SIT_CADASTAL: Optional[str] = None
+    SIT_CADASTRAL: str
     MOT_SIT_CADASTAL: Optional[str] = None
     DT_SIT_CADASTAL: Optional[int] = None
     DT_ABERTURA_ESTAB: Optional[int] = None
-    CNAE_PRINCIPAL_COD: Optional[str] = None
+    CNAE_PRINCIPAL_COD: str
     END_UF: Optional[str] = None
     OPCAO_MEI: Optional[str] = None
-    PORTE: Optional[str] = None
+    PORTE: str
     LISTA_QSA_SOCIO_NOME: Optional[str] = None
     END_TIPO_LOGRADOURO: Optional[str] = None
     END_LOGRADOURO: Optional[str] = None
