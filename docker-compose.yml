@@ -5,8 +5,8 @@ services:
       dockerfile: docker/Dockerfile
     container_name: robo-atualizacao-fornecedores
     restart: unless-stopped
-    volumes:
-      - ${DOCKER_VOLUME_DATA}:/app/data
-      - ${DOCKER_VOLUME_DATABASE}:/app/database
+    # volumes:
+    #   - ${DOCKER_VOLUME_DATA}:/app/data
+    #   - ${DOCKER_VOLUME_DATABASE}:/app/database
     env_file:
       - .env

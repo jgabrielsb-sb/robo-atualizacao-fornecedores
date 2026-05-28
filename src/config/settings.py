@@ -35,5 +35,8 @@ class Settings(BaseSettings):
     RABBIT_QUEUE_NAME: str
     RABBIT_CONNECTION_NAME: str
 
+    RUN_CRON_TIME: str
+    RUN_WITH_CRON: bool
+
 
 settings = Settings()
