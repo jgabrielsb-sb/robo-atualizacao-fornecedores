@@ -22,6 +22,6 @@ class Container:
     def get_get_and_update_fornecedores_workflow(self) -> GetAndUpdateFornecedoresWorkflow:
         return GetAndUpdateFornecedoresWorkflow(
             get_cnpjs_to_update=self.adapter_provider.get_get_cnpjs_to_update_via_fornecedores_api_adapter(),
-            build_fornecedor=self.get_build_fornecedor_service(),
+            build_fornecedor=self.adapter_provider.get_build_fornecedor_via_receita_api_adapter(),
             update_fornecedor=self.adapter_provider.get_update_fornecedor_via_protheus_api_adapter(),
         )
