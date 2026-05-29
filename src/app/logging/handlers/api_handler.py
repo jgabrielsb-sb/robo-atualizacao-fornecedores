@@ -36,6 +36,8 @@ class APIHandler(logging.Handler):
             "workflow_trace_id": getattr(record, "workflow_trace_id", None),
             "traceback_error": self._format_traceback_error(record),
             "cnpj": getattr(record, "cnpj", None),
+            "input": getattr(record, "input", None),
+            "output": getattr(record, "output", None),
             "count": getattr(record, "count", None),
             "result": getattr(record, "result", None),
             "fornecedores_to_update_count": getattr(record, "fornecedores_to_update_count", None),

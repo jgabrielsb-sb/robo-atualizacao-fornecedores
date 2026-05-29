@@ -71,7 +71,7 @@ class GetAndUpdateFornecedoresWorkflow:
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
                     "count": len(cnpjs_to_update),
-                    "result": [str(cnpj) for cnpj in cnpjs_to_update],
+                    "output": [cnpj.value for cnpj in cnpjs_to_update],
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 }
@@ -106,7 +106,9 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
-                    "result": asdict(fornecedor),
+                    "cnpj": cnpj.value,
+                    "input": cnpj.value,
+                    "output": asdict(fornecedor),
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 },
@@ -118,7 +120,9 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
-                    "cnpj": str(cnpj),
+                    "cnpj": cnpj.value,
+                    "input": cnpj.value,
+                    "output": None,
                     "status": StatusEnum.ERROR.value,
                     "event_name": EVENT_NAME,
                 },
@@ -142,10 +146,11 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
-                    "result": str(result),
+                    "cnpj": fornecedor.identificacao.cnpj.value,
+                    "input": result.input,
+                    "output": result.output,
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
-                    "fornecedor": str(fornecedor),
                 }
             )
         except Exception as e:
@@ -156,7 +161,9 @@ class GetAndUpdateFornecedoresWorkflow:
                     "workflow_trace_id": workflow_trace_id,
                     "status": StatusEnum.ERROR.value,
                     "event_name": EVENT_NAME,
-                    "fornecedor": str(fornecedor),
+                    "cnpj": fornecedor.identificacao.cnpj.value,
+                    "input": None,
+                    "output": None,
                 },
                 exc_info=True,
             )

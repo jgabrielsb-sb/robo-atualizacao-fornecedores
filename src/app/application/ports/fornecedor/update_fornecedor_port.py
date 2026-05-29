@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Any
 
 from app.domain.entities import Fornecedor
+from pydantic import BaseModel
+
+class UpdateFornecedorResult(BaseModel):
+    input: dict
+    output: dict
 
 
 class UpdateFornecedorPort(ABC):
     @abstractmethod
-    def update(self, fornecedor: Fornecedor) -> Any:
+    def update(self, fornecedor: Fornecedor) -> UpdateFornecedorResult:
         pass
