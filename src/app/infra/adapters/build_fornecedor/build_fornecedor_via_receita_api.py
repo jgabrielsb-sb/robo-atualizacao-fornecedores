@@ -199,6 +199,7 @@ class BuildFornecedorViaReceitaAPI(BuildFornecedorPort):
             endereco=Endereco.create(
                 endereco=api_company.END_LOGRADOURO or "",
                 numero=api_company.END_NUMERO or "",
+                bairro=api_company.END_BAIRRO or "",
                 complemento=api_company.END_COMPLEMENTO or "",
                 cep=CEP.create(cep=api_company.END_CEP) if api_company.END_CEP else None,
                 municipio=self.get_municipio(api_company.END_MUNICIPIO) if api_company.END_MUNICIPIO else None,
