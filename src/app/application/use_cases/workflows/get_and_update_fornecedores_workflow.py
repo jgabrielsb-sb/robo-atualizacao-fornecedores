@@ -64,7 +64,10 @@ class GetAndUpdateFornecedoresWorkflow:
         trace_id = str(uuid.uuid4())
         EVENT_NAME = GET_CNPJS_TO_UPDATE_EVENT_NAME
         try:
-            cnpjs_to_update = self._get_cnpjs_to_update.get()
+            #cnpjs_to_update = self._get_cnpjs_to_update.get()
+            cnpjs_to_update = [
+                CNPJ.create(cnpj="10589833000193"), # opt simples
+            ]
             logger.info(
                 "Successfully retrieved CNPJs to update",
                 extra={

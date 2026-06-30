@@ -55,6 +55,11 @@ class ClassificacaoProtheus(str, Enum):
     DEMAIS = "D"
     NAO_INFORMADO = "NI"
 
+class TipoPessoaProtheus(str, Enum):
+    CI = "CI"
+    PF = "PF"
+    OS = "OS"
+
 
 class ProtheusUpdateResult(BaseModel):
     codigo_for: str
@@ -104,6 +109,7 @@ class FornecedorUpdateOnProtheus(BaseModel):
 
     # Status
     For_Ativ: SimNaoProtheus  # "S"/"N"
+    Moti_Blq: str = "" # Motivo de bloqueio
 
     # Fiscal
     Simples: SimplesNacionalProtheus  # "SIM"/"NAO" — different format from S/N fields
@@ -113,6 +119,8 @@ class FornecedorUpdateOnProtheus(BaseModel):
     Vinc_Seb: VinculoSebraeProtheus
     Federaca: FederacaoProtheus
     Cooperat: SimNaoProtheus  # "S"/"N"
+
+    cTipPess: TipoPessoaProtheus
 
     # Banks
     Bancos: List[BancosProtheus] = Field(

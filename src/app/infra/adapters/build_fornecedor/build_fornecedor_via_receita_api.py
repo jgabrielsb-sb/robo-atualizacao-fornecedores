@@ -154,7 +154,7 @@ class BuildFornecedorViaReceitaAPI(BuildFornecedorPort):
         """
         if not self._atividade_economica_description:
             self._atividade_economica_description = self._get_atividade_economica_description(atividade_economica_code)
-
+            
         normalized_atividade_economica_description = normalize_str(
             self._atividade_economica_description
         )

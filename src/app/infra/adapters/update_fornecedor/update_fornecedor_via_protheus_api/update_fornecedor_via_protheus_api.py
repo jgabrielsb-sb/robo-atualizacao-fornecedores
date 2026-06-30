@@ -20,9 +20,10 @@ class UpdateFornecedorViaProtheusAPI(UpdateFornecedorPort):
     def update(self, fornecedor: Fornecedor) -> UpdateFornecedorResult:
         try:
             payload = self._builder.build(fornecedor)
-            protheus_update_result = self._protheus_api_requester.update_fornecedor(payload)
+            protheus_update_result, payload = self._protheus_api_requester.update_fornecedor(payload)
+            
             return UpdateFornecedorResult(
-                input=payload.model_dump(),
+                input=payload,
                 output=protheus_update_result.model_dump(),
             )
         except Exception as e:

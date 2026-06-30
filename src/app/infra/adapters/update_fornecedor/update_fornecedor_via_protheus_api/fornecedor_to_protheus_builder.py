@@ -1,5 +1,5 @@
 from app.domain.entities.fornecedor.fornecedor_entity import Fornecedor
-from app.domain.enums import PorteEnum, SituacaoCadastralEnum
+from app.domain.enums import PorteEnum, SituacaoCadastralEnum, TipoPessoaEnum
 from app.infra.api_requester.protheus_api_requester.models import (
     ClassificacaoProtheus,
     FederacaoProtheus,
@@ -7,6 +7,7 @@ from app.infra.api_requester.protheus_api_requester.models import (
     SimNaoProtheus,
     SimplesNacionalProtheus,
     TipoFornecedorProtheus,
+    TipoPessoaProtheus,
     VinculoSebraeProtheus,
 )
 
@@ -34,6 +35,25 @@ class FornecedorToProtheusBuilder:
         SituacaoCadastralEnum.BAIXADA: SimNaoProtheus.NAO,
     }
 
+    _SITUACAO_TO_MOTI_BLQ: dict[
+        SituacaoCadastralEnum,
+        str,
+    ] = {
+        SituacaoCadastralEnum.ATIVA: "",
+        SituacaoCadastralEnum.INAPTA: "000009", #"000009 EMPRESA INAPTA", 
+        SituacaoCadastralEnum.SUSPENSA: "000011", #"000011 EMPRESA SUSPENSA",
+        SituacaoCadastralEnum.BAIXADA: "000010", #"000010 EMPRESA BAIXADA",
+    }
+
+    _TIPO_PESSOA_TO_CTIP_PESSOA : dict[
+        TipoPessoaEnum,
+        TipoPessoaProtheus,
+    ] = {
+        TipoPessoaEnum.CI: TipoPessoaProtheus.CI,
+        TipoPessoaEnum.PF: TipoPessoaProtheus.PF,
+        TipoPessoaEnum.OS: TipoPessoaProtheus.OS,
+    }
+
     def build(self, fornecedor: Fornecedor) -> FornecedorUpdateOnProtheus:
         dc     = fornecedor.dados_cadastrais
         ident  = fornecedor.identificacao
@@ -41,10 +61,11 @@ class FornecedorToProtheusBuilder:
         contato = fornecedor.dados_contato
 
         for_ativ = self._SITUACAO_TO_FOR_ATIV[dc.situacao_cadastral]
-
+        moti_blq = self._SITUACAO_TO_MOTI_BLQ[dc.situacao_cadastral]
+        
         return FornecedorUpdateOnProtheus(
             CNPJ_For=ident.cnpj.value,
-            Nome_For=ident.razao_social,
+            Nome_For=ident.razao_social[:10],
             Nome_Red=ident.nome_fantasia or "",
             Ende_For=end.endereco or "",
             Nume_End=end.numero or "",
@@ -58,9 +79,11 @@ class FornecedorToProtheusBuilder:
             Tipo_Forn=TipoFornecedorProtheus.PESSOA_JURIDICA,
             Classifi=self._PORTE_TO_CLASSIFI[dc.porte],
             For_Ativ=for_ativ,
+            Moti_Blq=self._SITUACAO_TO_MOTI_BLQ[dc.situacao_cadastral],
             Simples=SimplesNacionalProtheus.SIM if dc.opt_simples_nacional else SimplesNacionalProtheus.NAO,
             Cod_Rete=dc.codigo_retencao,
             Vinc_Seb=VinculoSebraeProtheus.SEM_VINCULO,
             Federaca=FederacaoProtheus.NAO,
             Cooperat=SimNaoProtheus.SIM if dc.cooperativa else SimNaoProtheus.NAO,
+            cTipPess=self._TIPO_PESSOA_TO_CTIP_PESSOA[dc.tipo_pessoa],
         )
