@@ -11,6 +11,31 @@ class FornecedorToUpdate(BaseModel):
     NOME: str
     NOME_FANTASIA: str
     CPF_CNPJ: str
+    TIPO_FORNEC: str
+    ENDERECO: str
+    NUMERO_END: str
+    COMPLEM_END: str
+    BAIRRO: str
+    ESTADO: str
+    COD_MUNICIP: str
+    MUNICIPIO: str
+    CEP_FORNEC: str
+    DDD_FONE: str
+    TELEFONE: str
+    E_MAIL: str
+    INSCR_ESTAD: str
+    INSCR_MUNIC: str
+    BLOQUEADO: str
+    RELACAO_FOR: str
+    MOTIVO_BLOQ: str
+    INI_BLOQUEIO: str
+    FIM_BLOQUEIO: str
+    ATIVIDA_FOR: str
+    FOR_SIMPLES: str
+    FEDERACAO: str
+    COOPERATIVA: str
+    TIPO_PESSOA: str
+    COD_RETENCAO: str
 
 class Cnae(BaseModel):
     id: int
@@ -63,7 +88,7 @@ class FornecedoresAPIRequester:
         :raises APIRequesterException: if the request fails.
         :params return: list[FornecedorToUpdate] | None
         """
-        url = f"{self._base_url}/api/v1/fornecedores-to-update"
+        url = f"{self._base_url}/api/v1/fornecedores-to-update/"
         response = requests.get(url)
         status_code = response.status_code
 

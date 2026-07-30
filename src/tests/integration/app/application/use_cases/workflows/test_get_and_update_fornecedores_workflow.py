@@ -7,9 +7,9 @@ What is being tested:
     real test environment APIs.
 
 Wiring:
-    get_cnpjs_to_update  → FakeGetCNPJsToUpdatePort   (controlled — inject specific CNPJs)
-    build_fornecedor     → FornecedorBuilderService    (real: queue, Receita API, Selenium)
-    update_fornecedor    → UpdateFornecedorViaProtheusAPI (real: Protheus test API)
+    get_fornecedores_to_update → FakeGetFornecedoresToUpdatePort (controlled — inject specific CNPJs)
+    build_fornecedor           → FornecedorBuilderService    (real: queue, Receita API, Selenium)
+    update_fornecedor          → UpdateFornecedorViaProtheusAPI (real: Protheus test API)
 
 Requirements:
     - RabbitMQ queue must be reachable (cartao CNPJ)

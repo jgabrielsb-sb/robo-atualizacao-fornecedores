@@ -120,7 +120,7 @@ class TestGetMunicipioByName:
         )
 
 class TestGetFornecedoresToUpdate:
-    url_fornecedores_to_update =  "/api/v1/fornecedores-to-update"
+    url_fornecedores_to_update =  "/api/v1/fornecedores-to-update/"
 
     def test_should_return_list_of_fornecedores_to_update_when_there_are_fornecedores_to_update_and_response_is_200(
         self,

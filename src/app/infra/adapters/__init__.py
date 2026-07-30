@@ -3,9 +3,9 @@ from .get_cartao_cnpj import (
     GetCartaoCNPJViaQueueRequester,
     CartaoCNPJBuilder,
 )
-from .get_cnpjs_to_update import (
-    GetCNPJsToUpdateViaFornecedoresAPI,
-    InvalidIdentifierError,
+from .get_fornecedores_to_update import (
+    GetFornecedoresToUpdateViaFornecedoresAPI,
+    GetFornecedoresToUpdateViaFornecedoresAPIError,
 )
 from .municipio_lookup import MunicipioLookupViaFornecedoresAPI
 from .exceptions import ErrorWhileGettingExternalDataError
@@ -16,8 +16,8 @@ from .build_fornecedor import BuildFornecedorViaReceitaAPI
 __all__ = [
     "GetOptSimplesNacionalWithSelenium",
     "GetCartaoCNPJViaQueueRequester",
-    "GetCNPJsToUpdateViaFornecedoresAPI",
-    "InvalidIdentifierError",
+    "GetFornecedoresToUpdateViaFornecedoresAPI",
+    "GetFornecedoresToUpdateViaFornecedoresAPIError",
     "ErrorWhileGettingExternalDataError",
     "GetEnderecoViaReceitaAPIRequester",
     "UpdateFornecedorViaProtheusAPI",

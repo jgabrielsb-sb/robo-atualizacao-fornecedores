@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from app.infra.adapters import (
     GetOptSimplesNacionalWithSelenium,
-    GetCNPJsToUpdateViaFornecedoresAPI,
+    GetFornecedoresToUpdateViaFornecedoresAPI,
     UpdateFornecedorViaProtheusAPI,
     GetCartaoCNPJViaQueueRequester,
     MunicipioLookupViaFornecedoresAPI,
@@ -39,9 +39,10 @@ class AdapterProvider:
             receita_api_requester=self.infra_provider.get_receita_api_requester(),
         )
 
-    def get_get_cnpjs_to_update_via_fornecedores_api_adapter(self) -> GetCNPJsToUpdateViaFornecedoresAPI:
-        return GetCNPJsToUpdateViaFornecedoresAPI(
+    def get_get_fornecedores_to_update_via_fornecedores_api_adapter(self) -> GetFornecedoresToUpdateViaFornecedoresAPI:
+        return GetFornecedoresToUpdateViaFornecedoresAPI(
             fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
+            municipio_lookup_port=self.get_get_municipio_via_fornecedores_api_adapter(),
         )
 
     def get_update_fornecedor_via_protheus_api_adapter(self) -> UpdateFornecedorViaProtheusAPI:

@@ -1,4 +1,4 @@
-from .get_cnpjs_to_update_port import GetCNPJsToUpdatePort
+from .get_fornecedores_to_update_port import GetFornecedoresToUpdatePort
 from .fornecedor import (
     BuildFornecedorPort,
     FornecedorRepositoryPort,
