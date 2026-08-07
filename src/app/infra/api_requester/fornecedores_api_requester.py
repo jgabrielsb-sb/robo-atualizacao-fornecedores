@@ -109,7 +109,6 @@ class FornecedoresAPIRequester:
         :raises APIRequesterException: if the request fails.
         """
         url = f"{self._base_url}/v1/cnaes/code/{code}"
-        print(url)
         response = requests.get(url)
         status_code = response.status_code
 
