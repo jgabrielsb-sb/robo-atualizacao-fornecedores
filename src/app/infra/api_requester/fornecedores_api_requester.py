@@ -58,7 +58,7 @@ class FornecedoresAPIRequester:
         :raises APIRequesterException: if the request fails.
         :params return: Municipio
         """
-        url = f"{self._base_url}/api/v1/municipios/name/{municipio_name}"
+        url = f"{self._base_url}/v1/municipios/name/{municipio_name}"
         response = requests.get(url)
         status_code = response.status_code
 
@@ -88,7 +88,7 @@ class FornecedoresAPIRequester:
         :raises APIRequesterException: if the request fails.
         :params return: list[FornecedorToUpdate] | None
         """
-        url = f"{self._base_url}/api/v1/fornecedores-to-update/"
+        url = f"{self._base_url}/v1/fornecedores-to-update/"
         response = requests.get(url)
         status_code = response.status_code
 
@@ -99,7 +99,8 @@ class FornecedoresAPIRequester:
             raise APIRequesterException(
                 f"Failed to get fornecedores to update \n"
                 f"Status Code: {status_code} \n"
-                f"Response text: {response.text}"
+                f"Response text: {response.text} \n"
+                f"URL: {url}"
             )
 
     def get_cnae_by_code(self, code: str) -> Cnae:
@@ -107,7 +108,7 @@ class FornecedoresAPIRequester:
         :raises NotFoundError: if the CNAE is not found.
         :raises APIRequesterException: if the request fails.
         """
-        url = f"{self._base_url}/api/v1/cnaes/code/{code}"
+        url = f"{self._base_url}/v1/cnaes/code/{code}"
         print(url)
         response = requests.get(url)
         status_code = response.status_code
