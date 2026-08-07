@@ -68,7 +68,6 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
         cnpj: CNPJ,
     ) -> Fornecedor:
         municipio_name = fornecedor_to_update.MUNICIPIO.strip()
-
         return Fornecedor.create(
             endereco=Endereco.create(
                 endereco=fornecedor_to_update.ENDERECO.strip() or None,
@@ -88,7 +87,7 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
                 porte=None,
                 opt_simples_nacional=fornecedor_to_update.FOR_SIMPLES.strip().upper() == "SIM",
                 situacao_cadastral=self._get_situacao_cadastral(fornecedor_to_update.MOTIVO_BLOQ),
-                tipo_pessoa=fornecedor_to_update.TIPO_PESSOA,
+                tipo_pessoa=fornecedor_to_update.TIPO_PESSOA.strip() or None,
                 vinculo_sebrae=fornecedor_to_update.RELACAO_FOR,
                 federacao=fornecedor_to_update.FEDERACAO,
                 cooperativa=fornecedor_to_update.COOPERATIVA.strip().upper() == "SIM",

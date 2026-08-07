@@ -34,6 +34,7 @@ class APIHandler(logging.Handler):
     def _clean_metadata_json(self, record: logging.LogRecord):
         metadata_json = {
             "workflow_trace_id": getattr(record, "workflow_trace_id", None),
+            "fornecedor_trace_id": getattr(record, "fornecedor_trace_id", None),
             "traceback_error": self._format_traceback_error(record),
             "cnpj": getattr(record, "cnpj", None),
             "input": getattr(record, "input", None),

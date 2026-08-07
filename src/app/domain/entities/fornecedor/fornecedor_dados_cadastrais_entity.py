@@ -17,11 +17,11 @@ class InvalidFornecedorDadosCadastraisError(Exception):
 class FornecedorDadosCadastrais:
     opt_simples_nacional: bool
     situacao_cadastral: SituacaoCadastralEnum
-    tipo_pessoa: TipoPessoaEnum
     vinculo_sebrae: VinculoSebraeEnum
     federacao: FederacaoEnum
     cooperativa: bool
     codigo_retencao: str
+    tipo_pessoa: TipoPessoaEnum | None = None
     porte: PorteEnum | None = None
 
     def __post_init__(self):
@@ -31,7 +31,7 @@ class FornecedorDadosCadastrais:
             raise TypeError("opt_simples_nacional must be a bool")
         if not isinstance(self.situacao_cadastral, SituacaoCadastralEnum):
             raise TypeError("situacao_cadastral must be a SituacaoCadastral")
-        if not isinstance(self.tipo_pessoa, TipoPessoaEnum):
+        if self.tipo_pessoa and not isinstance(self.tipo_pessoa, TipoPessoaEnum):
             raise TypeError("tipo_pessoa must be a TipoPessoaEnum")
         if not isinstance(self.vinculo_sebrae, VinculoSebraeEnum):
             raise TypeError("vinculo_sebrae must be a VinculoSebraeEnum")
@@ -49,17 +49,18 @@ class FornecedorDadosCadastrais:
         porte: PorteEnum | None,
         opt_simples_nacional: bool,
         situacao_cadastral: str | SituacaoCadastralEnum,
-        tipo_pessoa: str | TipoPessoaEnum,
+        tipo_pessoa: str | TipoPessoaEnum | None = None,
         vinculo_sebrae: str | VinculoSebraeEnum,
         federacao: str | FederacaoEnum,
-        cooperativa: bool,
+        cooperativa: bool | None,
         codigo_retencao: str,
     ) -> 'FornecedorDadosCadastrais':
+        
         return cls(
             porte=PorteEnum.from_value(porte) if porte else None,
             opt_simples_nacional=opt_simples_nacional,
             situacao_cadastral=SituacaoCadastralEnum.from_value(situacao_cadastral),
-            tipo_pessoa=TipoPessoaEnum.from_value(tipo_pessoa),
+            tipo_pessoa=TipoPessoaEnum.from_value(tipo_pessoa) if tipo_pessoa else None,
             vinculo_sebrae=VinculoSebraeEnum.from_value(vinculo_sebrae),
             federacao=FederacaoEnum.from_value(federacao),
             cooperativa=cooperativa,

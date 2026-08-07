@@ -2,6 +2,7 @@
 Workflow responsible for retrieving the CNPJs that must be updated,
 building their full Fornecedor data via an external port, and persisting the updated records.
 """
+import json
 import logging
 import uuid
 from dataclasses import asdict
@@ -39,6 +40,12 @@ class GetAndUpdateFornecedoresWorkflowResult(BaseModel):
     failed_built_fornecedores_count: int
     successfully_updated_fornecedores_count: int
     failed_updated_fornecedores_count: int
+
+
+def _fornecedor_as_json(fornecedor: Fornecedor) -> dict:
+    """asdict() alone leaves Enum/UUID objects embedded, which aren't JSON-serializable;
+    round-tripping through json.dumps/loads guarantees a genuinely JSON-safe dict for logging."""
+    return json.loads(json.dumps(asdict(fornecedor), default=str))
 
 
 GET_FORNECEDORES_TO_UPDATE_EVENT_NAME = "GET_FORNECEDORES_TO_UPDATE"
@@ -94,11 +101,13 @@ class GetAndUpdateFornecedoresWorkflow:
 
     def build_fornecedor(
         self,
-        cnpj: CNPJ,
+        fornecedor: Fornecedor,
         workflow_trace_id: str,
+        fornecedor_trace_id: str,
     ) -> Fornecedor:
         trace_id = str(uuid.uuid4())
         EVENT_NAME = BUILD_FORNECEDOR_EVENT_NAME
+        cnpj = fornecedor.identificacao.cnpj
         try:
             fornecedor = self._build_fornecedor.build(cnpj)
             logger.info(
@@ -106,9 +115,10 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
-                    "cnpj": cnpj.value,
-                    "input": cnpj.value,
-                    "output": asdict(fornecedor),
+                    "fornecedor_trace_id": fornecedor_trace_id,
+                    "fornecedor_cnpj": cnpj.value,
+                    "input": _fornecedor_as_json(fornecedor),
+                    "output": _fornecedor_as_json(fornecedor),
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 },
@@ -120,8 +130,9 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
-                    "cnpj": cnpj.value,
-                    "input": cnpj.value,
+                    "fornecedor_trace_id": fornecedor_trace_id, 
+                    "fornecedor_cnpj": cnpj.value,
+                    "input": _fornecedor_as_json(fornecedor),
                     "output": None,
                     "status": StatusEnum.ERROR.value,
                     "event_name": EVENT_NAME,
@@ -136,6 +147,7 @@ class GetAndUpdateFornecedoresWorkflow:
         self,
         fornecedor: Fornecedor,
         workflow_trace_id: str,
+        fornecedor_trace_id: str,
     ) -> None:
         trace_id = str(uuid.uuid4())
         EVENT_NAME = UPDATE_FORNECEDOR_EVENT_NAME
@@ -146,9 +158,10 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
-                    "cnpj": fornecedor.identificacao.cnpj.value,
-                    "input": result.input,
-                    "output": result.output,
+                    "fornecedor_trace_id": fornecedor_trace_id,
+                    "fornecedor_cnpj": fornecedor.identificacao.cnpj.value,
+                    "input": _fornecedor_as_json(fornecedor),
+                    "output": "TESTE MUDAR",
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 }
@@ -159,10 +172,11 @@ class GetAndUpdateFornecedoresWorkflow:
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
+                    "fornecedor_trace_id": fornecedor_trace_id,
+                    "fornecedor_cnpj": fornecedor.identificacao.cnpj.value,
                     "status": StatusEnum.ERROR.value,
                     "event_name": EVENT_NAME,
-                    "cnpj": fornecedor.identificacao.cnpj.value,
-                    "input": None,
+                    "input": _fornecedor_as_json(fornecedor),
                     "output": None,
                 },
                 exc_info=True,
@@ -210,15 +224,24 @@ class GetAndUpdateFornecedoresWorkflow:
         failed_updated_fornecedores_count = 0
 
         for fornecedor_to_update in fornecedores_to_update:
+            fornecedor_trace_id = str(uuid.uuid4())
             try:
-                fornecedor = self.build_fornecedor(fornecedor_to_update.identificacao.cnpj, workflow_trace_id)
+                fornecedor = self.build_fornecedor(
+                    fornecedor_to_update, 
+                    workflow_trace_id,
+                    fornecedor_trace_id
+                )
                 successfully_built_fornecedores_count += 1
             except BuildFornecedorWorkflowError:
                 failed_built_fornecedores_count += 1
                 continue
 
             try:
-                self.update_fornecedor(fornecedor, workflow_trace_id)
+                self.update_fornecedor(
+                    fornecedor, 
+                    workflow_trace_id,
+                    fornecedor_trace_id
+                )
                 successfully_updated_fornecedores_count += 1
             except UpdateFornecedorWorkflowError:
                 failed_updated_fornecedores_count += 1
