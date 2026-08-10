@@ -38,7 +38,7 @@ class ProtheusAPIRequester:
     def update_fornecedor(
         self,
         fornecedor: FornecedorUpdateOnProtheus,
-    ) -> ProtheusUpdateResult:
+    ) -> tuple[ProtheusUpdateResult, dict]:
         url = f"{self._base_url}{self._ENDPOINT}"
 
         payload = fornecedor.model_dump()
