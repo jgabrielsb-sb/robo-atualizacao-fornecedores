@@ -88,7 +88,7 @@ class FornecedoresAPIRequester:
         :raises APIRequesterException: if the request fails.
         :params return: list[FornecedorToUpdate] | None
         """
-        url = f"{self._base_url}/v1/fornecedores-to-update/"
+        url = f"{self._base_url}/v1/fornecedores-to-update/all"
         response = requests.get(url)
         status_code = response.status_code
 
