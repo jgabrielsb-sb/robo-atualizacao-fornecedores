@@ -40,14 +40,10 @@ class ProtheusAPIRequester:
         fornecedor: FornecedorUpdateOnProtheus,
     ) -> ProtheusUpdateResult:
         url = f"{self._base_url}{self._ENDPOINT}"
-        print(url)
 
         payload = fornecedor.model_dump()
         payload["cAuth"] = self._c_auth
         payload["Tipo_Ope"] = TipoOperacaoProtheus.ALTERACAO.value
-        print("payload: ", payload)
-        print("headers: ", self._headers)
-        print
         response = requests.post(
             url,
             headers=self._headers,
@@ -55,9 +51,6 @@ class ProtheusAPIRequester:
             timeout=30,
             verify=False,
         )
-        response.request.body
-        print("request body: ", response.request.body)
-        print(response.text)
 
         if response.status_code != HTTPStatus.CREATED:
             raise APIRequesterException(
@@ -66,8 +59,7 @@ class ProtheusAPIRequester:
             )
 
         data = response.json()
-        print(data)
-        
+
         if not data.get("sucesso"):
             descr_erro = data.get("descr_erro", "")
             raise ProtheusUpdateError(
