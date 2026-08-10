@@ -24,6 +24,9 @@ from app.infra.api_requester.fornecedores_api_requester import (
 logger = logging.getLogger(__name__)
 
 
+class BuildFornecedorError(Exception):
+    pass
+
 class GetFornecedoresToUpdateViaFornecedoresAPIError(Exception):
     pass
 
@@ -118,10 +121,11 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
 
             try:
                 fornecedores.append(self._build_fornecedor(fornecedor_to_update, cnpj))
-            except Exception:
-                logger.warning(
+            except Exception as e:
+                logger.error(
                     f"Failed to build fornecedor -- {cnpj.value} -- , skipping it",
                     exc_info=True,
                 )
+                raise BuildFornecedorError(f"Failed to build fornecedor with CNPJ {cnpj.value} : {e}")
 
         return fornecedores
