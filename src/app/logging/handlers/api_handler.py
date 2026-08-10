@@ -67,13 +67,14 @@ class APIHandler(logging.Handler):
     def emit(self, record: logging.LogRecord):
         log_create = self._convert_to_api_format(record)
 
-        url = f"{self._base_api_url}/api/v1/logs/"
+        url = f"{self._base_api_url}/v1/logs/"
         response = requests.post(url, json=log_create.model_dump(mode="json"))
 
         if response.status_code != HTTPStatus.CREATED:
             raise APIException(
                 f"API returned unexpected HTTP {response.status_code}. "
                 f"Response: {response.text}"
+                f"URL: {url}"
             )
 
         return response.json()
