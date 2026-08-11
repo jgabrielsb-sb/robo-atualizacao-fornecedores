@@ -28,7 +28,7 @@ class FederacaoEnum(Enum):
                 return member
 
         raise InvalidFederacaoError(
-            f"Invalid Federacao: {value}. Valid values: {cls.__members__}"
+            f"Invalid Federacao: --{value}--. Valid values: {cls.__members__}"
         )
 
 
