@@ -65,7 +65,7 @@ class FornecedorToProtheusBuilder:
         
         return FornecedorUpdateOnProtheus(
             CNPJ_For=ident.cnpj.value,
-            Nome_For=ident.razao_social[:10],
+            Nome_For=ident.razao_social[:50],
             Nome_Red=ident.nome_fantasia or "",
             Ende_For=end.endereco or "",
             Nume_End=end.numero or "",
