@@ -16,11 +16,11 @@ class InvalidFornecedorDadosCadastraisError(Exception):
 @dataclass(frozen=True)
 class FornecedorDadosCadastrais:
     opt_simples_nacional: bool
-    situacao_cadastral: SituacaoCadastralEnum
     vinculo_sebrae: VinculoSebraeEnum
     federacao: FederacaoEnum
     cooperativa: bool
     codigo_retencao: str
+    situacao_cadastral: SituacaoCadastralEnum | None = None
     tipo_pessoa: TipoPessoaEnum | None = None
     porte: PorteEnum | None = None
 
@@ -29,7 +29,7 @@ class FornecedorDadosCadastrais:
             raise TypeError("porte must be a PorteEnum")
         if not isinstance(self.opt_simples_nacional, bool):
             raise TypeError("opt_simples_nacional must be a bool")
-        if not isinstance(self.situacao_cadastral, SituacaoCadastralEnum):
+        if self.situacao_cadastral and not isinstance(self.situacao_cadastral, SituacaoCadastralEnum):
             raise TypeError("situacao_cadastral must be a SituacaoCadastral")
         if self.tipo_pessoa and not isinstance(self.tipo_pessoa, TipoPessoaEnum):
             raise TypeError("tipo_pessoa must be a TipoPessoaEnum")
