@@ -71,7 +71,7 @@ class GetAndUpdateFornecedoresWorkflow:
         trace_id = str(uuid.uuid4())
         EVENT_NAME = GET_FORNECEDORES_TO_UPDATE_EVENT_NAME
         try:
-            fornecedores_to_update = self._get_fornecedores_to_update.get()
+            fornecedores_to_update = self._get_fornecedores_to_update.get()[:1]
             logger.info(
                 "Successfully retrieved fornecedores to update",
                 extra={
@@ -109,7 +109,7 @@ class GetAndUpdateFornecedoresWorkflow:
         EVENT_NAME = BUILD_FORNECEDOR_EVENT_NAME
         cnpj = fornecedor.identificacao.cnpj
         try:
-            fornecedor = self._build_fornecedor.build(cnpj)
+            fornecedor_after_build = self._build_fornecedor.build(cnpj)
             logger.info(
                 "Successfully built fornecedor",
                 extra={
@@ -118,12 +118,12 @@ class GetAndUpdateFornecedoresWorkflow:
                     "fornecedor_trace_id": fornecedor_trace_id,
                     "fornecedor_cnpj": cnpj.value,
                     "input": _fornecedor_as_json(fornecedor),
-                    "output": _fornecedor_as_json(fornecedor),
+                    "output": _fornecedor_as_json(fornecedor_after_build),
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 },
             )
-            return fornecedor
+            return fornecedor_after_build
         except Exception as e:
             logger.error(
                 "Failed to build fornecedor",
@@ -161,7 +161,7 @@ class GetAndUpdateFornecedoresWorkflow:
                     "fornecedor_trace_id": fornecedor_trace_id,
                     "fornecedor_cnpj": fornecedor.identificacao.cnpj.value,
                     "input": _fornecedor_as_json(fornecedor),
-                    "output": "TESTE MUDAR",
+                    "output": result,
                     "status": StatusEnum.SUCCESS.value,
                     "event_name": EVENT_NAME,
                 }

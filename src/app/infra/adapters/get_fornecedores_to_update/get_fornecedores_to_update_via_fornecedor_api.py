@@ -1,5 +1,5 @@
 import logging
-
+import uuid
 from app.application.ports import GetFornecedoresToUpdatePort, MunicipioLookupPort
 from app.domain.entities import Fornecedor
 from app.domain.entities.fornecedor import (
@@ -7,11 +7,13 @@ from app.domain.entities.fornecedor import (
     FornecedorDadosCadastrais,
     FornecedorDadosContato,
 )
-from app.domain.enums import SituacaoCadastralEnum
+from app.domain import Municipio, CodigoMunicipioIBGE
+from app.domain.enums import SituacaoCadastralEnum, TipoPessoaEnum, FederacaoEnum, VinculoSebraeEnum
 from app.domain.value_objects import (
     CEP,
     CNPJ,
     CPF,
+    DDD,
     Endereco,
     InvalidCNPJError,
     InvalidCPFError,
@@ -30,6 +32,11 @@ class BuildFornecedorError(Exception):
 class GetFornecedoresToUpdateViaFornecedoresAPIError(Exception):
     pass
 
+class GetSituacaoCadastralError(Exception):
+    pass
+
+class GetFederacaoError(Exception):
+    pass
 
 class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
     # Inverse of FornecedorToProtheusBuilder._SITUACAO_TO_MOTI_BLQ: the endpoint
@@ -39,6 +46,11 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
         "000009": SituacaoCadastralEnum.INAPTA,
         "000011": SituacaoCadastralEnum.SUSPENSA,
         "000010": SituacaoCadastralEnum.BAIXADA,
+    }
+
+    _FEDERACAO_TO_FEDERACAO_ENUM: dict[str, FederacaoEnum] = {
+        "NÃO": FederacaoEnum.NAO,
+        "SIM": FederacaoEnum.FEDERACAO,
     }
 
     def __init__(
@@ -56,13 +68,13 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
         except InvalidCPFError:
             return False
 
-    def _get_situacao_cadastral(self, motivo_bloq: str) -> SituacaoCadastralEnum:
-        normalized = motivo_bloq.strip()
+    def _get_federacao(self, federacao: str) -> FederacaoEnum:
+        normalized = federacao.strip()
         try:
-            return self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL[normalized]
+            return self._FEDERACAO_TO_FEDERACAO_ENUM[normalized]
         except KeyError:
-            raise GetFornecedoresToUpdateViaFornecedoresAPIError(
-                f"Cannot map MOTIVO_BLOQ to a SituacaoCadastral: {motivo_bloq!r}"
+            raise GetFederacaoError(
+                f"Cannot map FEDERACAO to a FederacaoEnum: --{federacao}--. Valid values: {self._FEDERACAO_TO_FEDERACAO_ENUM.keys()}"
             )
 
     def _build_fornecedor(
@@ -71,33 +83,63 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
         cnpj: CNPJ,
     ) -> Fornecedor:
         municipio_name = fornecedor_to_update.MUNICIPIO.strip()
-        return Fornecedor.create(
-            endereco=Endereco.create(
+        # return Fornecedor.create(
+        #     endereco=Endereco.create(
+        #         endereco=fornecedor_to_update.ENDERECO.strip() or None,
+        #         numero=fornecedor_to_update.NUMERO_END.strip() or None,
+        #         bairro=fornecedor_to_update.BAIRRO.strip() or None,
+        #         complemento=fornecedor_to_update.COMPLEM_END.strip() or None,
+        #         cep=CEP.create(cep=fornecedor_to_update.CEP_FORNEC) if fornecedor_to_update.CEP_FORNEC.strip() else None,
+        #         municipio=Municipio(nome=municipio_name, codigo_ibge=CodigoMunicipioIBGE(value=fornecedor_to_update.COD_MUNICIP)),
+        #         uf=fornecedor_to_update.ESTADO.strip() or None,
+        #     ),
+        #     identificacao=FornecedorIdentificacao.create(
+        #         cnpj=cnpj.value,
+        #         razao_social=fornecedor_to_update.NOME.strip(),
+        #         nome_fantasia=fornecedor_to_update.NOME_FANTASIA.strip() or None,
+        #     ),
+        #     dados_cadastrais=FornecedorDadosCadastrais.create(
+        #         porte=None,
+        #         opt_simples_nacional=fornecedor_to_update.FOR_SIMPLES.strip().upper() == "SIM",
+        #         situacao_cadastral=self._get_situacao_cadastral(fornecedor_to_update.MOTIVO_BLOQ),
+        #         tipo_pessoa=fornecedor_to_update.TIPO_PESSOA.strip() or None,
+        #         vinculo_sebrae=fornecedor_to_update.RELACAO_FOR,
+        #         federacao=fornecedor_to_update.FEDERACAO,
+        #         cooperativa=fornecedor_to_update.COOPERATIVA.strip().upper() == "SIM",
+        #         codigo_retencao=fornecedor_to_update.COD_RETENCAO.strip(),
+        #     ),
+        #     dados_contato=FornecedorDadosContato.create(
+        #         ddd=fornecedor_to_update.DDD_FONE.strip() or None,
+        #     ),
+        # )
+        return Fornecedor(
+            id=uuid.uuid4(),
+            endereco=Endereco(
                 endereco=fornecedor_to_update.ENDERECO.strip() or None,
                 numero=fornecedor_to_update.NUMERO_END.strip() or None,
                 bairro=fornecedor_to_update.BAIRRO.strip() or None,
                 complemento=fornecedor_to_update.COMPLEM_END.strip() or None,
-                cep=CEP.create(cep=fornecedor_to_update.CEP_FORNEC) if fornecedor_to_update.CEP_FORNEC.strip() else None,
-                municipio=self._municipio_lookup_port.get(municipio_name) if municipio_name else None,
+                cep=CEP(value=fornecedor_to_update.CEP_FORNEC) if fornecedor_to_update.CEP_FORNEC.strip() else None,
+                municipio=Municipio(nome=municipio_name, codigo_ibge=CodigoMunicipioIBGE(value=fornecedor_to_update.COD_MUNICIP)),
                 uf=fornecedor_to_update.ESTADO.strip() or None,
             ),
-            identificacao=FornecedorIdentificacao.create(
-                cnpj=cnpj.value,
+            identificacao=FornecedorIdentificacao(
+                cnpj=CNPJ.create(cnpj=cnpj.value),
                 razao_social=fornecedor_to_update.NOME.strip(),
                 nome_fantasia=fornecedor_to_update.NOME_FANTASIA.strip() or None,
             ),
-            dados_cadastrais=FornecedorDadosCadastrais.create(
+            dados_cadastrais=FornecedorDadosCadastrais(
                 porte=None,
                 opt_simples_nacional=fornecedor_to_update.FOR_SIMPLES.strip().upper() == "SIM",
-                situacao_cadastral=self._get_situacao_cadastral(fornecedor_to_update.MOTIVO_BLOQ),
-                tipo_pessoa=fornecedor_to_update.TIPO_PESSOA.strip() or None,
-                vinculo_sebrae=fornecedor_to_update.RELACAO_FOR,
-                federacao=fornecedor_to_update.FEDERACAO,
+                situacao_cadastral=None,
+                tipo_pessoa=TipoPessoaEnum.from_value(fornecedor_to_update.TIPO_PESSOA.strip()) if fornecedor_to_update.TIPO_PESSOA.strip() else None,
+                vinculo_sebrae=VinculoSebraeEnum.from_value(fornecedor_to_update.RELACAO_FOR),
+                federacao=self._get_federacao(fornecedor_to_update.FEDERACAO.strip()),
                 cooperativa=fornecedor_to_update.COOPERATIVA.strip().upper() == "SIM",
                 codigo_retencao=fornecedor_to_update.COD_RETENCAO.strip(),
             ),
-            dados_contato=FornecedorDadosContato.create(
-                ddd=fornecedor_to_update.DDD_FONE.strip() or None,
+            dados_contato=FornecedorDadosContato(
+                ddd=DDD(value=fornecedor_to_update.DDD_FONE.strip()) if fornecedor_to_update.DDD_FONE.strip() else None,
             ),
         )
 
@@ -121,7 +163,11 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
 
             try:
                 fornecedores.append(self._build_fornecedor(fornecedor_to_update, cnpj))
+            except GetSituacaoCadastralError as e:
+                logger.warning(f"Failed to get situacao cadastral for fornecedor -- {cnpj.value} -- , skipping it: {e}")
+                continue
             except Exception as e:
+                print(fornecedor_to_update)
                 logger.error(
                     f"Failed to build fornecedor -- {cnpj.value} -- , skipping it",
                     exc_info=True,

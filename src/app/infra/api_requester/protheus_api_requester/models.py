@@ -120,7 +120,7 @@ class FornecedorUpdateOnProtheus(BaseModel):
     Federaca: FederacaoProtheus
     Cooperat: SimNaoProtheus  # "S"/"N"
 
-    cTipPess: TipoPessoaProtheus
+    cTipPess: TipoPessoaProtheus = Field(alias="Tipo_Pes")
 
     # Banks
     Bancos: List[BancosProtheus] = Field(

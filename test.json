@@ -1,0 +1,36 @@
+{
+    "CNPJ_For": "09617721000110",
+    "Nome_For": "TORRE EQUI",
+    "Nome_Red": "",
+    "Ende_For": "DOUTOR GERALDO MELO DOS SANTOS",
+    "Nume_End": "32",
+    "Cmpl_End": "",
+    "Bair_For": "FAROL",
+    "Esta_For": "AL",
+    "Codi_Mun": "2704302",
+    "Muni_For": "MACEIO",
+    "CEP_Forn": "57051245",
+    "Ema_Forn": "",
+    "DDD_Forn": "82",
+    "Tel_Forn": "",
+    "Tipo_Forn": "J",
+    "Classifi": "ME",
+    "Insc_Est": "",
+    "For_Ativ": "S",
+    "Moti_Blq": "",
+    "Simples": "NAO",
+    "Cod_Rete": "1708",
+    "Vinc_Seb": "Z",
+    "Federaca": "0",
+    "Cooperat": "N",
+    "Tipo_Pes": "OS",
+    "Bancos": [
+        {
+            "Banco_Fo": "",
+            "Agenc_Fo": "",
+            "Conta_Fo": ""
+        }
+    ],
+    "cAuth": "MmMzMDYxYTBhOTRkNzRiZGU4ODE3N2JhNDJmZDNmZWIuMzBiZjQxODhhODU5YzhhMzA2OGYyM2VhNWEyYzMwYWYuYWU3YWJlYzc0M2M4N2ZiODU1NTc0NDZjYWI2MWZmM2Y=",
+    "Tipo_Ope": "4"
+}

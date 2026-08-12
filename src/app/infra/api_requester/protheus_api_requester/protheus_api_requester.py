@@ -41,7 +41,7 @@ class ProtheusAPIRequester:
     ) -> tuple[ProtheusUpdateResult, dict]:
         url = f"{self._base_url}{self._ENDPOINT}"
 
-        payload = fornecedor.model_dump()
+        payload = fornecedor.model_dump(by_alias=True)
         payload["cAuth"] = self._c_auth
         payload["Tipo_Ope"] = TipoOperacaoProtheus.ALTERACAO.value
         response = requests.post(
