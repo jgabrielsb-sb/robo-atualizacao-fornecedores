@@ -32,15 +32,15 @@ class BuildFornecedorError(Exception):
 class GetFornecedoresToUpdateViaFornecedoresAPIError(Exception):
     pass
 
-class GetSituacaoCadastralError(Exception):
-    pass
-
 class GetFederacaoError(Exception):
     pass
 
 class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
     # Inverse of FornecedorToProtheusBuilder._SITUACAO_TO_MOTI_BLQ: the endpoint
     # only exposes Protheus's Moti_Blq code, not a SituacaoCadastral, so we map back.
+    # MOTIVO_BLOQ can also hold a free-text block reason entered directly in Protheus
+    # (e.g. "PORTAL DA TRANSPARENCIA: ..."), not one of these codes; any non-empty
+    # value we don't recognize is treated as SUSPENSA.
     _MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL: dict[str, SituacaoCadastralEnum] = {
         "": SituacaoCadastralEnum.ATIVA,
         "000009": SituacaoCadastralEnum.INAPTA,
@@ -78,10 +78,10 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
             )
 
     def _get_situacao_cadastral(self, motivo_bloq: str) -> SituacaoCadastralEnum:
-        try:
-            return self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL[motivo_bloq]
-        except KeyError:
-            raise GetSituacaoCadastralError(f"Cannot map MOTIVO_BLOQ to a SituacaoCadastralEnum: --{motivo_bloq}--. Valid values: {self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL.keys()}")
+        normalized = motivo_bloq.strip()
+        if normalized in self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL:
+            return self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL[normalized]
+        return SituacaoCadastralEnum.SUSPENSA
 
     def _build_fornecedor(
         self,
@@ -141,9 +141,6 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
 
             try:
                 fornecedores.append(self._build_fornecedor(fornecedor_to_update, cnpj))
-            except GetSituacaoCadastralError as e:
-                logger.warning(f"Failed to get situacao cadastral for fornecedor -- {cnpj.value} -- , skipping it: {e}")
-                continue
             except Exception as e:
                 print(fornecedor_to_update)
                 logger.error(

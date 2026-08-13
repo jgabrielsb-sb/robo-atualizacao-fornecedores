@@ -1,5 +1,11 @@
 from app.domain.entities.fornecedor.fornecedor_entity import Fornecedor
-from app.domain.enums import PorteEnum, SituacaoCadastralEnum, TipoPessoaEnum
+from app.domain.enums import (
+    PorteEnum, 
+    SituacaoCadastralEnum, 
+    TipoPessoaEnum, 
+    TipoContratoSocialEnum,
+)
+
 from app.infra.api_requester.protheus_api_requester.models import (
     ClassificacaoProtheus,
     FederacaoProtheus,
@@ -8,6 +14,7 @@ from app.infra.api_requester.protheus_api_requester.models import (
     SimplesNacionalProtheus,
     TipoFornecedorProtheus,
     TipoPessoaProtheus,
+    TipoContratoSocialProtheus,
     VinculoSebraeProtheus,
 )
 
@@ -54,14 +61,23 @@ class FornecedorToProtheusBuilder:
         TipoPessoaEnum.OS: TipoPessoaProtheus.OS,
     }
 
+    _TIPO_CONTRATO_SOCIAL_TO_CT_SOCIA : dict[
+        TipoContratoSocialEnum,
+        TipoContratoSocialProtheus,
+    ] = {
+        TipoContratoSocialEnum.J: TipoContratoSocialProtheus.J,
+        TipoContratoSocialEnum.F: TipoContratoSocialProtheus.F,
+        TipoContratoSocialEnum.L: TipoContratoSocialProtheus.L,
+    }
+
     def build(self, fornecedor: Fornecedor) -> FornecedorUpdateOnProtheus:
         dc     = fornecedor.dados_cadastrais
         ident  = fornecedor.identificacao
         end    = fornecedor.endereco
         contato = fornecedor.dados_contato
 
-        for_ativ = self._SITUACAO_TO_FOR_ATIV[dc.situacao_cadastral]
-        moti_blq = self._SITUACAO_TO_MOTI_BLQ[dc.situacao_cadastral]
+        for_ativ = self._SITUACAO_TO_FOR_ATIV[dc.situacao_cadastral] if dc.situacao_cadastral else ""
+        moti_blq = self._SITUACAO_TO_MOTI_BLQ[dc.situacao_cadastral] if dc.situacao_cadastral else ""
         
         return FornecedorUpdateOnProtheus(
             CNPJ_For=ident.cnpj.value,
@@ -77,13 +93,14 @@ class FornecedorToProtheusBuilder:
             CEP_Forn=end.cep.value if end.cep else "",
             DDD_Forn=contato.ddd.value if contato.ddd else "",
             Tipo_Forn=TipoFornecedorProtheus.PESSOA_JURIDICA,
-            Classifi=self._PORTE_TO_CLASSIFI[dc.porte],
-            For_Ativ=for_ativ,
-            Moti_Blq=self._SITUACAO_TO_MOTI_BLQ[dc.situacao_cadastral],
+            Classifi=self._PORTE_TO_CLASSIFI[dc.porte] if dc.porte else "",
+            For_Ativ=for_ativ if dc.situacao_cadastral else "",
+            Moti_Blq=self._SITUACAO_TO_MOTI_BLQ[dc.situacao_cadastral] if dc.situacao_cadastral else "",
             Simples=SimplesNacionalProtheus.SIM if dc.opt_simples_nacional else SimplesNacionalProtheus.NAO,
             Cod_Rete=dc.codigo_retencao,
             Vinc_Seb=VinculoSebraeProtheus.SEM_VINCULO,
             Federaca=FederacaoProtheus.NAO,
             Cooperat=SimNaoProtheus.SIM if dc.cooperativa else SimNaoProtheus.NAO,
-            cTipPess=self._TIPO_PESSOA_TO_CTIP_PESSOA[dc.tipo_pessoa],
+            Tipo_Pes=self._TIPO_PESSOA_TO_CTIP_PESSOA[dc.tipo_pessoa] if dc.tipo_pessoa else "",
+            Ct_Socia=self._TIPO_CONTRATO_SOCIAL_TO_CT_SOCIA[dc.tipo_contrato_social] if dc.tipo_contrato_social else "",
         )

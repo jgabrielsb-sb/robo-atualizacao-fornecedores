@@ -4,6 +4,7 @@ from app.application.ports import (
     GetOptSimplesNacionalPort,
     GetAtividadeEconomicaDescriptionPort,
 )
+from app.domain.enums import TipoContratoSocialEnum
 from app.infra.api_requester.receita_api_requester import (
     ReceitaAPIRequester, 
     ReceitaAPIGetCompanyResponse
@@ -217,6 +218,7 @@ class BuildFornecedorViaReceitaAPI(BuildFornecedorPort):
                 tipo_pessoa=self.get_tipo_pessoa(api_company.CNAE_PRINCIPAL_COD),
                 vinculo_sebrae=VinculoSebraeEnum.Z, # sem vinculo sempre
                 federacao=FederacaoEnum.NAO, # nao federacao sempre
+                tipo_contrato_social=TipoContratoSocialEnum.J,
                 cooperativa=cooperativa,
                 codigo_retencao=self.get_codigo_retencao(cooperativa),
             ),

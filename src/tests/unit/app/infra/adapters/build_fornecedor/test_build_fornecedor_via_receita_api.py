@@ -3,7 +3,7 @@ pytestmark = pytest.mark.unit
 
 from app.application.ports import MunicipioLookupPort, GetAtividadeEconomicaDescriptionPort
 from app.application.ports.fornecedor.build_fornecedor.get_opt_simples_nacional_port import GetOptSimplesNacionalPort
-from app.domain.enums import PorteEnum, SituacaoCadastralEnum, TipoPessoaEnum
+from app.domain.enums import PorteEnum, SituacaoCadastralEnum, TipoPessoaEnum, TipoContratoSocialEnum
 from app.domain.value_objects import CNPJ, Municipio, CodigoMunicipioIBGE
 from app.infra.adapters.build_fornecedor.build_fornecedor_via_receita_api import (
     BuildFornecedorViaReceitaAPI,
@@ -299,3 +299,12 @@ def test_build_returns_fornecedor_with_codigo_retencao_1708_when_cooperativa_is_
     adapter = make_adapter(api_response=make_api_response(NOME_EMPRESARIAL="CLINICA CARDIOVIDA LTDA"))
     result = adapter.build(_CNPJ)
     assert result.dados_cadastrais.codigo_retencao == "1708"
+
+# ---------------------------------------------------------------------------
+# Tipo contrato social tests
+# ---------------------------------------------------------------------------
+
+def test_build_always_returns_fornecedor_with_tipo_contrato_social_juridico():
+    adapter = make_adapter()
+    result = adapter.build(_CNPJ)
+    assert result.dados_cadastrais.tipo_contrato_social == TipoContratoSocialEnum.J

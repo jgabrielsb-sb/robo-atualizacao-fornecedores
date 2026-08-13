@@ -60,6 +60,11 @@ class TipoPessoaProtheus(str, Enum):
     PF = "PF"
     OS = "OS"
 
+class TipoContratoSocialProtheus(str, Enum):
+    J = "J"
+    F = "F"
+    L = "L"
+
 
 class ProtheusUpdateResult(BaseModel):
     codigo_for: str
@@ -82,18 +87,18 @@ class FornecedorUpdateOnProtheus(BaseModel):
     CNPJ_For: str
 
     # Name
-    Nome_For: str
+    Nome_For: str = ""
     Nome_Red: str = ""
 
     # Address
-    Ende_For: str
-    Nume_End: str
+    Ende_For: str = ""
+    Nume_End: str = ""
     Cmpl_End: str = ""
-    Bair_For: str
+    Bair_For: str = ""
     Esta_For: str = "" # UF sigla, e.g. "AL"
-    Codi_Mun: str  # IBGE code
-    Muni_For: str
-    CEP_Forn: str
+    Codi_Mun: str = "" # IBGE code
+    Muni_For: str = ""
+    CEP_Forn: str = ""
 
     # Contact
     Ema_Forn: str = ""
@@ -101,26 +106,27 @@ class FornecedorUpdateOnProtheus(BaseModel):
     Tel_Forn: str = ""
 
     # Classification
-    Tipo_Forn: TipoFornecedorProtheus
-    Classifi: ClassificacaoProtheus
+    Tipo_Forn: TipoFornecedorProtheus | str = ""
+    Classifi: ClassificacaoProtheus | str = ""
 
     # Tax / registration
     Insc_Est: str = ""
 
     # Status
-    For_Ativ: SimNaoProtheus  # "S"/"N"
+    For_Ativ: SimNaoProtheus | str = "" # "S"/"N"
     Moti_Blq: str = "" # Motivo de bloqueio
 
     # Fiscal
     Simples: SimplesNacionalProtheus  # "SIM"/"NAO" — different format from S/N fields
-    Cod_Rete: str
+    Cod_Rete: str = ""  
 
     # SEBRAE-specific
-    Vinc_Seb: VinculoSebraeProtheus
-    Federaca: FederacaoProtheus
-    Cooperat: SimNaoProtheus  # "S"/"N"
+    Vinc_Seb: VinculoSebraeProtheus | str = ""
+    Federaca: FederacaoProtheus | str = ""
+    Cooperat: SimNaoProtheus | str = "" # "S"/"N"
 
-    cTipPess: TipoPessoaProtheus = Field(alias="Tipo_Pes")
+    cTipPess: TipoPessoaProtheus | str = Field(alias="Tipo_Pes")
+    Ct_Socia: TipoContratoSocialProtheus | str = ""
 
     # Banks
     Bancos: List[BancosProtheus] = Field(

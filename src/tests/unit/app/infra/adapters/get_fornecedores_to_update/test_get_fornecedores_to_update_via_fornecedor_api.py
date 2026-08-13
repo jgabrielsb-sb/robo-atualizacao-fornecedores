@@ -150,9 +150,15 @@ def test_should_map_all_fornecedor_fields_correctly():
     "motivo_bloq,expected_situacao",
     [
         ("", SituacaoCadastralEnum.ATIVA),
+        (" ", SituacaoCadastralEnum.ATIVA),
         ("000009", SituacaoCadastralEnum.INAPTA),
         ("000011", SituacaoCadastralEnum.SUSPENSA),
         ("000010", SituacaoCadastralEnum.BAIXADA),
+        ("999999", SituacaoCadastralEnum.SUSPENSA),
+        (
+            "PORTAL DA TRANSPARÊNCIA: IMPEDIDO DE LICITAR OU CONTRATAR COM O SISTEMA SEBRAE",
+            SituacaoCadastralEnum.SUSPENSA,
+        ),
     ],
 )
 def test_should_map_motivo_bloqueio_to_situacao_cadastral(motivo_bloq, expected_situacao):
@@ -164,14 +170,4 @@ def test_should_map_motivo_bloqueio_to_situacao_cadastral(motivo_bloq, expected_
 
     assert len(result) == 1
     assert result[0].dados_cadastrais.situacao_cadastral == expected_situacao
-
-
-def test_should_skip_fornecedor_when_motivo_bloqueio_cannot_be_mapped():
-    fornecedor_to_update = make_fornecedor_to_update(MOTIVO_BLOQ="999999")
-
-    adapter = make_adapter([fornecedor_to_update])
-
-    result = adapter.get()
-
-    assert result == []
 
