@@ -79,3 +79,24 @@ def fornecedor_to_update_with_invalid_identifier_data() -> dict:
         **_base_fornecedor_to_update_data(),
         "CPF_CNPJ": "INVALID",
     }
+
+
+# ---------------------------------------------------------------------------
+# Fornecedores API — real route paths
+#
+# Single source of truth for the routes FornecedoresAPIRequester hits.
+# Both the requester tests and the adapter integration tests mock these
+# same endpoints, so a route change only needs updating here instead of
+# in every file that registers a mock for it.
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def url_municipio_by_name() -> str:
+    """Path template for FornecedoresAPIRequester.get_municipio_by_name; format with municipio_name."""
+    return "/v1/municipios/name/{municipio_name}"
+
+
+@pytest.fixture
+def url_fornecedores_to_update() -> str:
+    """Path for FornecedoresAPIRequester.get_fornecedores_to_update."""
+    return "/v1/fornecedores-to-update/all"

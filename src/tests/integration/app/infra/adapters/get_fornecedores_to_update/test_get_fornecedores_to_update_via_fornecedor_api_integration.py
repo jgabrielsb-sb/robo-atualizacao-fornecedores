@@ -29,10 +29,6 @@ from app.infra.adapters.municipio_lookup.municipio_lookup_via_fornecedores_api i
 from app.infra.api_requester.exceptions import APIRequesterException
 from app.infra.api_requester.fornecedores_api_requester import FornecedoresAPIRequester
 
-url_fornecedores_to_update = "/api/v1/fornecedores-to-update/"
-url_municipio_by_name = "/api/v1/municipios/name/MACEIO"
-
-
 @pytest.fixture
 def municipio_data() -> dict:
     return {
@@ -59,11 +55,15 @@ def test_should_ignore_cpf_and_return_only_fornecedores_built_from_cnpjs(
     fornecedor_to_update_with_cpf_data: dict,
     fornecedor_to_update_with_cnpj_data: dict,
     municipio_data: dict,
+    url_fornecedores_to_update: str,
+    url_municipio_by_name: str,
 ):
     httpserver.expect_request(url_fornecedores_to_update).respond_with_json(
         [fornecedor_to_update_with_cnpj_data, fornecedor_to_update_with_cpf_data]
     )
-    httpserver.expect_request(url_municipio_by_name).respond_with_json(municipio_data)
+    httpserver.expect_request(
+        url_municipio_by_name.format(municipio_name="MACEIO")
+    ).respond_with_json(municipio_data)
 
     adapter = make_adapter(httpserver)
 
@@ -78,6 +78,7 @@ def test_should_ignore_cpf_and_return_only_fornecedores_built_from_cnpjs(
 
 def test_should_return_empty_list_when_there_are_no_fornecedores_to_update(
     httpserver: HTTPServer,
+    url_fornecedores_to_update: str,
 ):
     httpserver.expect_request(url_fornecedores_to_update).respond_with_json([])
 
@@ -90,6 +91,7 @@ def test_should_return_empty_list_when_there_are_no_fornecedores_to_update(
 
 def test_should_raise_api_requester_exception_when_the_request_fails(
     httpserver: HTTPServer,
+    url_fornecedores_to_update: str,
 ):
     httpserver.expect_request(url_fornecedores_to_update).respond_with_json(
         {"error": "internal server error"},

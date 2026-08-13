@@ -26,14 +26,13 @@ def municipio_data() -> dict:
 
 
 class TestGetMunicipioByName:
-    url_municipio_by_name = "/api/v1/municipios/name/{municipio_name}"
-    
     def test_should_raise_not_found_error_if_municipio_wuth_that_name_is_not_found(
         self,
         httpserver: HTTPServer,
+        url_municipio_by_name: str,
     ):
         municipio_name = "TEST"
-        url = self.url_municipio_by_name.format(municipio_name=municipio_name)
+        url = url_municipio_by_name.format(municipio_name=municipio_name)
         httpserver.expect_request(url).respond_with_json(
             {"error": "not found error"},
             status=HTTPStatus.NOT_FOUND
@@ -50,10 +49,11 @@ class TestGetMunicipioByName:
 
     def test_should_raise_api_requester_exception_if_request_fails_and_response_is_json(
         self,
-        httpserver: HTTPServer
-    ):  
+        httpserver: HTTPServer,
+        url_municipio_by_name: str,
+    ):
         municipio_name = "TEST"
-        url = self.url_municipio_by_name.format(municipio_name=municipio_name)
+        url = url_municipio_by_name.format(municipio_name=municipio_name)
         
         httpserver.expect_request(url).respond_with_json(
             {"error": "internal server error"},
@@ -71,10 +71,11 @@ class TestGetMunicipioByName:
 
     def test_should_raise_api_requester_exception_if_request_fails_and_response_is_not_json(
         self,
-        httpserver: HTTPServer
+        httpserver: HTTPServer,
+        url_municipio_by_name: str,
     ):
         municipio_name = "TEST"
-        url = self.url_municipio_by_name.format(municipio_name=municipio_name)
+        url = url_municipio_by_name.format(municipio_name=municipio_name)
         
         httpserver.expect_request(url).respond_with_data(
             "ERROR DATA",
@@ -94,10 +95,11 @@ class TestGetMunicipioByName:
     def test_should_return_municipio_if_there_is_municipio_with_that_name(
         self,
         httpserver: HTTPServer,
-        municipio_data: dict
+        municipio_data: dict,
+        url_municipio_by_name: str,
     ):
         municipio_name = "MACEIO"
-        url = self.url_municipio_by_name.format(municipio_name=municipio_name)
+        url = url_municipio_by_name.format(municipio_name=municipio_name)
 
         httpserver.expect_request(
             url
@@ -120,17 +122,16 @@ class TestGetMunicipioByName:
         )
 
 class TestGetFornecedoresToUpdate:
-    url_fornecedores_to_update =  "/api/v1/fornecedores-to-update/"
-
     def test_should_return_list_of_fornecedores_to_update_when_there_are_fornecedores_to_update_and_response_is_200(
         self,
         httpserver: HTTPServer,
         fornecedor_to_update_with_cpf_data: dict,
-        fornecedor_to_update_with_cnpj_data: dict
+        fornecedor_to_update_with_cnpj_data: dict,
+        url_fornecedores_to_update: str,
     ):
         # 1 - Define what the server expects and returns
         httpserver.expect_request(
-            self.url_fornecedores_to_update
+            url_fornecedores_to_update
         ).respond_with_json(
             [
                 fornecedor_to_update_with_cnpj_data,
@@ -154,10 +155,11 @@ class TestGetFornecedoresToUpdate:
 
     def test_should_return_empty_list_when_there_are_no_fornecedores_to_update_and_response_is_200(
         self,
-        httpserver: HTTPServer
+        httpserver: HTTPServer,
+        url_fornecedores_to_update: str,
     ):
         httpserver.expect_request(
-            self.url_fornecedores_to_update
+            url_fornecedores_to_update
         ).respond_with_json([])
 
         requester = FornecedoresAPIRequester(
@@ -171,11 +173,12 @@ class TestGetFornecedoresToUpdate:
 
     def test_should_return_api_requester_exception_when_status_code_is_not_200_and_response_is_json(
         self,
-        httpserver: HTTPServer
+        httpserver: HTTPServer,
+        url_fornecedores_to_update: str,
     ):
         dict_error = {"error": "internal server error"}
         httpserver.expect_request(
-            self.url_fornecedores_to_update
+            url_fornecedores_to_update
         ).respond_with_json(
             dict_error,
             status=500
@@ -193,12 +196,13 @@ class TestGetFornecedoresToUpdate:
 
     def test_should_return_api_requester_exception_when_status_code_is_not_200_and_response_is_not_json(
         self,
-        httpserver: HTTPServer
+        httpserver: HTTPServer,
+        url_fornecedores_to_update: str,
     ):
         error_data = "ERROR"
-        
+
         httpserver.expect_request(
-            self.url_fornecedores_to_update
+            url_fornecedores_to_update
         ).respond_with_data(
             error_data,
             status=500
