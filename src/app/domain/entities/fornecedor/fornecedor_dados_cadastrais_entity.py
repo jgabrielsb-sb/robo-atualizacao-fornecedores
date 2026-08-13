@@ -58,6 +58,7 @@ class FornecedorDadosCadastrais:
         federacao: str | FederacaoEnum,
         cooperativa: bool | None,
         codigo_retencao: str,
+        tipo_contrato_social: str | TipoContratoSocialEnum | None = None,
     ) -> 'FornecedorDadosCadastrais':
         
         return cls(
@@ -67,6 +68,7 @@ class FornecedorDadosCadastrais:
             tipo_pessoa=TipoPessoaEnum.from_value(tipo_pessoa) if tipo_pessoa else None,
             vinculo_sebrae=VinculoSebraeEnum.from_value(vinculo_sebrae),
             federacao=FederacaoEnum.from_value(federacao),
-            cooperativa=cooperativa,
+            cooperativa=cooperativa if cooperativa is not None else False,
             codigo_retencao=codigo_retencao,
+            tipo_contrato_social=TipoContratoSocialEnum.from_value(tipo_contrato_social) if tipo_contrato_social else None,
         )
