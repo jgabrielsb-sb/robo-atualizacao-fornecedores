@@ -3,7 +3,8 @@ from .tipo_pessoa_enum import TipoPessoaEnum, InvalidTipoPessoaError
 from .vinculo_sebrae_enum import VinculoSebraeEnum, InvalidVinculoSebraeError
 from .federacao_enum import FederacaoEnum, InvalidFederacaoError
 from .status_enum import StatusEnum
-from .situacao_cadasrtal_enum import SituacaoCadastralEnum
+from .situacao_cadasrtal_enum import SituacaoCadastralEnum, InvalidSituacaoCadastralError
+from .tipo_contrato_social_enum import TipoContratoSocialEnum, InvalidTipoContratoSocialError
 
 __all__ = [
     "PorteEnum",
@@ -15,4 +16,8 @@ __all__ = [
     "FederacaoEnum",
     "InvalidFederacaoError",
     "StatusEnum",
+    "SituacaoCadastralEnum",
+    "InvalidSituacaoCadastralError",
+    "TipoContratoSocialEnum",
+    "InvalidTipoContratoSocialError",
 ]

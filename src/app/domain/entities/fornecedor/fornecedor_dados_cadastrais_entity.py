@@ -5,6 +5,7 @@ from app.domain.enums import (
     PorteEnum,
     TipoPessoaEnum,
     VinculoSebraeEnum,
+    TipoContratoSocialEnum,
 )
 from app.domain.enums import SituacaoCadastralEnum
 
@@ -22,6 +23,7 @@ class FornecedorDadosCadastrais:
     codigo_retencao: str
     situacao_cadastral: SituacaoCadastralEnum | None = None
     tipo_pessoa: TipoPessoaEnum | None = None
+    tipo_contrato_social: TipoContratoSocialEnum | None = None
     porte: PorteEnum | None = None
 
     def __post_init__(self):
@@ -33,6 +35,8 @@ class FornecedorDadosCadastrais:
             raise TypeError("situacao_cadastral must be a SituacaoCadastral")
         if self.tipo_pessoa and not isinstance(self.tipo_pessoa, TipoPessoaEnum):
             raise TypeError("tipo_pessoa must be a TipoPessoaEnum")
+        if self.tipo_contrato_social and not isinstance(self.tipo_contrato_social, TipoContratoSocialEnum):
+            raise TypeError("tipo_contrato_social must be a TipoContratoSocialEnum")
         if not isinstance(self.vinculo_sebrae, VinculoSebraeEnum):
             raise TypeError("vinculo_sebrae must be a VinculoSebraeEnum")
         if not isinstance(self.federacao, FederacaoEnum):
