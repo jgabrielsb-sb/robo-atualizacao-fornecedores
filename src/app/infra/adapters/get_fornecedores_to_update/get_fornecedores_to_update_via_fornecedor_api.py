@@ -77,41 +77,19 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
                 f"Cannot map FEDERACAO to a FederacaoEnum: --{federacao}--. Valid values: {self._FEDERACAO_TO_FEDERACAO_ENUM.keys()}"
             )
 
+    def _get_situacao_cadastral(self, motivo_bloq: str) -> SituacaoCadastralEnum:
+        try:
+            return self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL[motivo_bloq]
+        except KeyError:
+            raise GetSituacaoCadastralError(f"Cannot map MOTIVO_BLOQ to a SituacaoCadastralEnum: --{motivo_bloq}--. Valid values: {self._MOTIVO_BLOQ_TO_SITUACAO_CADASTRAL.keys()}")
+
     def _build_fornecedor(
         self,
         fornecedor_to_update: FornecedorToUpdate,
         cnpj: CNPJ,
     ) -> Fornecedor:
         municipio_name = fornecedor_to_update.MUNICIPIO.strip()
-        # return Fornecedor.create(
-        #     endereco=Endereco.create(
-        #         endereco=fornecedor_to_update.ENDERECO.strip() or None,
-        #         numero=fornecedor_to_update.NUMERO_END.strip() or None,
-        #         bairro=fornecedor_to_update.BAIRRO.strip() or None,
-        #         complemento=fornecedor_to_update.COMPLEM_END.strip() or None,
-        #         cep=CEP.create(cep=fornecedor_to_update.CEP_FORNEC) if fornecedor_to_update.CEP_FORNEC.strip() else None,
-        #         municipio=Municipio(nome=municipio_name, codigo_ibge=CodigoMunicipioIBGE(value=fornecedor_to_update.COD_MUNICIP)),
-        #         uf=fornecedor_to_update.ESTADO.strip() or None,
-        #     ),
-        #     identificacao=FornecedorIdentificacao.create(
-        #         cnpj=cnpj.value,
-        #         razao_social=fornecedor_to_update.NOME.strip(),
-        #         nome_fantasia=fornecedor_to_update.NOME_FANTASIA.strip() or None,
-        #     ),
-        #     dados_cadastrais=FornecedorDadosCadastrais.create(
-        #         porte=None,
-        #         opt_simples_nacional=fornecedor_to_update.FOR_SIMPLES.strip().upper() == "SIM",
-        #         situacao_cadastral=self._get_situacao_cadastral(fornecedor_to_update.MOTIVO_BLOQ),
-        #         tipo_pessoa=fornecedor_to_update.TIPO_PESSOA.strip() or None,
-        #         vinculo_sebrae=fornecedor_to_update.RELACAO_FOR,
-        #         federacao=fornecedor_to_update.FEDERACAO,
-        #         cooperativa=fornecedor_to_update.COOPERATIVA.strip().upper() == "SIM",
-        #         codigo_retencao=fornecedor_to_update.COD_RETENCAO.strip(),
-        #     ),
-        #     dados_contato=FornecedorDadosContato.create(
-        #         ddd=fornecedor_to_update.DDD_FONE.strip() or None,
-        #     ),
-        # )
+        
         return Fornecedor(
             id=uuid.uuid4(),
             endereco=Endereco(
@@ -131,7 +109,7 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
             dados_cadastrais=FornecedorDadosCadastrais(
                 porte=None,
                 opt_simples_nacional=fornecedor_to_update.FOR_SIMPLES.strip().upper() == "SIM",
-                situacao_cadastral=None,
+                situacao_cadastral=self._get_situacao_cadastral(fornecedor_to_update.MOTIVO_BLOQ),
                 tipo_pessoa=TipoPessoaEnum.from_value(fornecedor_to_update.TIPO_PESSOA.strip()) if fornecedor_to_update.TIPO_PESSOA.strip() else None,
                 vinculo_sebrae=VinculoSebraeEnum.from_value(fornecedor_to_update.RELACAO_FOR),
                 federacao=self._get_federacao(fornecedor_to_update.FEDERACAO.strip()),

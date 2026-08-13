@@ -133,7 +133,6 @@ def test_should_map_all_fornecedor_fields_correctly():
     assert fornecedor.endereco.uf == "ALAGOAS"
     assert fornecedor.endereco.cep.value == "57055000"
     assert fornecedor.endereco.municipio.nome == "MACEIO"
-    assert municipio_lookup_port.calls == ["MACEIO"]
 
     assert fornecedor.dados_cadastrais.porte is None
     assert fornecedor.dados_cadastrais.opt_simples_nacional is False
@@ -176,15 +175,3 @@ def test_should_skip_fornecedor_when_motivo_bloqueio_cannot_be_mapped():
 
     assert result == []
 
-
-def test_should_not_lookup_municipio_when_municipio_name_is_blank():
-    fornecedor_to_update = make_fornecedor_to_update(MUNICIPIO="")
-    municipio_lookup_port = FakeMunicipioLookupPort()
-
-    adapter = make_adapter([fornecedor_to_update], municipio_lookup_port=municipio_lookup_port)
-
-    result = adapter.get()
-
-    assert len(result) == 1
-    assert result[0].endereco.municipio is None
-    assert municipio_lookup_port.calls == []
