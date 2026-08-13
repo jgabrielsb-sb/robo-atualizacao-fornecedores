@@ -71,7 +71,7 @@ class GetAndUpdateFornecedoresWorkflow:
         trace_id = str(uuid.uuid4())
         EVENT_NAME = GET_FORNECEDORES_TO_UPDATE_EVENT_NAME
         try:
-            fornecedores_to_update = self._get_fornecedores_to_update.get()[:1]
+            fornecedores_to_update = self._get_fornecedores_to_update.get()
             logger.info(
                 "Successfully retrieved fornecedores to update",
                 extra={
