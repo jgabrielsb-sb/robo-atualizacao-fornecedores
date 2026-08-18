@@ -1,5 +1,5 @@
 [project]
-name = "robo_atualizacao_fornecedores"
+name = "app"
 readme = "README.md"
 version = "0.0.1"
 authors = [
@@ -21,12 +21,21 @@ dependencies = [
     "sqlalchemy>=2.0.49",
     "python-dotenv>=1.1.0",
     "schedule>=1.2.0",
+    "pytest>=9.0.3",
+    "botasaurus>=4.0.97",
+    "pika>=1.4.0",
+    "selenium>=4.43.0",
+    "playwright>=1.60.0",
+    "playwright-stealth>=2.0.3",
+    "hcaptcha-challenger>=0.19.0",
+    "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "pytest-html>=3.0.0",
+    "pytest-httpserver>=1.0.0"
 ]
 
 [build-system]
@@ -46,6 +55,7 @@ addopts = [
     "--html=report.html",
 ]
 markers = [
+  "unit: marks tests as unit tests",
   "integration_tests: marks tests as integration tests",
   "real_case_tests: marks tests as real case tests",
 ]

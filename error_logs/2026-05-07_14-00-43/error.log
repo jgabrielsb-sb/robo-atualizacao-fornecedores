@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/jgabrielsb/Documents/Programming/Sebrae/robo-atualizacao-fornecedores/.venv/lib/python3.10/site-packages/botasaurus/browser_decorator.py", line 199, in run_task
+    result = func(driver, data)
+  File "/home/jgabrielsb/Documents/Programming/Sebrae/robo-atualizacao-fornecedores/src/main.py", line 26, in scrape_opt_simples
+    driver.click("button.h-captcha")
+  File "/home/jgabrielsb/Documents/Programming/Sebrae/robo-atualizacao-fornecedores/.venv/lib/python3.10/site-packages/botasaurus_driver/driver.py", line 1009, in click
+    elem = self.wait_for_element(selector, wait)
+  File "/home/jgabrielsb/Documents/Programming/Sebrae/robo-atualizacao-fornecedores/.venv/lib/python3.10/site-packages/botasaurus_driver/driver.py", line 1246, in wait_for_element
+    return self._make_element(self._tab.wait_for(selector, timeout=wait))
+  File "/home/jgabrielsb/Documents/Programming/Sebrae/robo-atualizacao-fornecedores/.venv/lib/python3.10/site-packages/botasaurus_driver/core/tab.py", line 1317, in wait_for
+    raise ElementWithSelectorNotFoundException(selector)
+botasaurus_driver.exceptions.ElementWithSelectorNotFoundException: Cannot find element with selector: 'button.h-captcha'.
