@@ -18,7 +18,9 @@ def run_workflow():
 schedule.every().day.at(settings.RUN_CRON_TIME).do(run_workflow)
 
 if __name__ == "__main__":
-    print("Do nothing!")
+    logger.info("Starting main")
+    while True:
+        time.sleep(30)
     # try:
     #     if settings.RUN_WITH_CRON:
     #         while True:
