@@ -103,6 +103,32 @@ class FornecedoresAPIRequester:
                 f"URL: {url}"
             )
 
+    def get_fornecedor_to_update_by_cpf_cnpj(self, cpf_cnpj: str) -> FornecedorToUpdate:
+        """
+        Method for getting a single fornecedor to update by its CPF/CNPJ.
+        Returns a FornecedorToUpdate object.
+
+        :raises NotFoundError: if the fornecedor is not found.
+        :raises APIRequesterException: if the request fails.
+        :params return: FornecedorToUpdate
+        """
+        url = f"{self._base_url}/v1/fornecedores-to-update/cpf-cnpj/{cpf_cnpj}"
+        response = requests.get(url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            data = response.json() # get json only after status_code == 200
+            return FornecedorToUpdate(**data)
+        elif status_code == HTTPStatus.NOT_FOUND:
+            raise NotFoundError(f"Fornecedor to update not found by CPF/CNPJ: {cpf_cnpj}")
+        else:
+            raise APIRequesterException(
+                f"Failed to get fornecedor to update by CPF/CNPJ: {cpf_cnpj} \n"
+                f"Status Code: {status_code} \n"
+                f"Response text: {response.text} \n"
+                f"URL: {url}"
+            )
+
     def get_cnae_by_code(self, code: str) -> Cnae:
         """
         :raises NotFoundError: if the CNAE is not found.
