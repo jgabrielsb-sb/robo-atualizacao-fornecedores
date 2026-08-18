@@ -18,18 +18,19 @@ def run_workflow():
 schedule.every().day.at(settings.RUN_CRON_TIME).do(run_workflow)
 
 if __name__ == "__main__":
-    try:
-        if settings.RUN_WITH_CRON:
-            while True:
-                schedule.run_pending()
-                time.sleep(1)
-        else:
-            run_workflow()
-    except Exception as e:
-        logger.critical("CRITICAL System Error", exc_info=True)
-        raise e
-    finally:
-        logger.info("System shutdown complete")
+    print("Do nothing!")
+    # try:
+    #     if settings.RUN_WITH_CRON:
+    #         while True:
+    #             schedule.run_pending()
+    #             time.sleep(1)
+    #     else:
+    #         run_workflow()
+    # except Exception as e:
+    #     logger.critical("CRITICAL System Error", exc_info=True)
+    #     raise e
+    # finally:
+    #     logger.info("System shutdown complete")
 
 
         
