@@ -9,14 +9,13 @@ ARGUMENTS = [
     "--disable-blink-features=AutomationControlled",
 ]
 
-import time
+
 @browser(
     user_agent=UserAgent.HASHED,
     lang=Lang.English,
     add_arguments=ARGUMENTS,
     output=None,
     wait_for_complete_page_load=True,
-    headless=True
 )
 def scrape_opt_simples(
     driver: Driver,
@@ -36,21 +35,15 @@ def is_optante_simples(cnpj: str, html: str) -> bool | None:
     STR_NAO_OPTANTE_SIMPLES = "NÃO optante pelo Simples Nacional"
     STR_CNPJ_INVALIDO = "CNPJ inválido"
 
-    
     if STR_NAO_OPTANTE_SIMPLES in html:
         return False
     if STR_OPTANTE_SIMPLES in html:
         return True
     if STR_CNPJ_INVALIDO in html:
         raise ValueError(f"CNPJ inválido: {cnpj}")
+    return None
 
-    raise ValueError(f"Erro desconhecido ao verificar optante simples nacional: {html}")
 
-
-def get_opt_simples(cnpj: str) -> bool:
+def get_opt_simples(cnpj: str) -> bool | None:
     html = scrape_opt_simples(cnpj)
     return is_optante_simples(cnpj, html)
-
-if __name__ == "__main__":
-    cnpj = "28738609000181"
-    get_opt_simples(cnpj)

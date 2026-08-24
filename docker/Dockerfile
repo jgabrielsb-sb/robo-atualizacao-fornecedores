@@ -7,7 +7,7 @@ WORKDIR ${WORKING_DIR}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         tzdata wget unzip ca-certificates curl \
-        fonts-liberation libasound2 libnss3 libxss1 libgbm1 && \
+        fonts-liberation libasound2 libnss3 libxss1 libgbm1 xvfb && \
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
