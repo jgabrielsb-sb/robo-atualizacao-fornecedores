@@ -16,6 +16,7 @@ from app.application.ports import (
     GetFornecedoresToUpdatePort,
     UpdateFornecedorPort,
     BuildFornecedorPort,
+    UpdatedFornecedorRepositoryPort,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,9 @@ class BuildFornecedorWorkflowError(GetAndUpdateFornecedoresWorkflowError):
 class UpdateFornecedorWorkflowError(GetAndUpdateFornecedoresWorkflowError):
     pass
 
+class PersistUpdatedFornecedorWorkflowError(GetAndUpdateFornecedoresWorkflowError):
+    pass
+
 
 class GetAndUpdateFornecedoresWorkflowResult(BaseModel):
     trace_id: str
@@ -40,6 +44,8 @@ class GetAndUpdateFornecedoresWorkflowResult(BaseModel):
     failed_built_fornecedores_count: int
     successfully_updated_fornecedores_count: int
     failed_updated_fornecedores_count: int
+    successfully_persisted_fornecedores_count: int
+    failed_persisted_fornecedores_count: int
 
 
 def _fornecedor_as_json(fornecedor: Fornecedor) -> dict:
@@ -51,6 +57,7 @@ def _fornecedor_as_json(fornecedor: Fornecedor) -> dict:
 GET_FORNECEDORES_TO_UPDATE_EVENT_NAME = "GET_FORNECEDORES_TO_UPDATE"
 BUILD_FORNECEDOR_EVENT_NAME = "BUILD_FORNECEDOR"
 UPDATE_FORNECEDOR_EVENT_NAME = "UPDATE_FORNECEDOR"
+PERSIST_UPDATED_FORNECEDOR_EVENT_NAME = "PERSIST_UPDATED_FORNECEDOR"
 WORKFLOW_EVENT_NAME = "GET_AND_UPDATE_FORNECEDORES"
 
 class GetAndUpdateFornecedoresWorkflow:
@@ -59,10 +66,12 @@ class GetAndUpdateFornecedoresWorkflow:
         get_fornecedores_to_update: GetFornecedoresToUpdatePort,
         build_fornecedor: BuildFornecedorPort,
         update_fornecedor: UpdateFornecedorPort,
+        persist_updated_fornecedor: UpdatedFornecedorRepositoryPort,
     ):
         self._get_fornecedores_to_update = get_fornecedores_to_update
         self._build_fornecedor = build_fornecedor
         self._update_fornecedor = update_fornecedor
+        self._persist_updated_fornecedor = persist_updated_fornecedor
 
     def get_fornecedores_to_update(
         self,
@@ -185,6 +194,49 @@ class GetAndUpdateFornecedoresWorkflow:
                 f"Failed to update fornecedor"
             ) from e
 
+    def persist_updated_fornecedor(
+        self,
+        fornecedor: Fornecedor,
+        workflow_trace_id: str,
+        fornecedor_trace_id: str,
+    ) -> None:
+        trace_id = str(uuid.uuid4())
+        EVENT_NAME = PERSIST_UPDATED_FORNECEDOR_EVENT_NAME
+        cnpj = fornecedor.identificacao.cnpj
+        try:
+            result = self._persist_updated_fornecedor.create(cnpj)
+            logger.info(
+                "Successfully persisted updated fornecedor",
+                extra={
+                    "trace_id": trace_id,
+                    "workflow_trace_id": workflow_trace_id,
+                    "fornecedor_trace_id": fornecedor_trace_id,
+                    "fornecedor_cnpj": cnpj.value,
+                    "input": cnpj.value,
+                    "output": result.model_dump(mode="json"),
+                    "status": StatusEnum.SUCCESS.value,
+                    "event_name": EVENT_NAME,
+                }
+            )
+        except Exception as e:
+            logger.error(
+                "Failed to persist updated fornecedor",
+                extra={
+                    "trace_id": trace_id,
+                    "workflow_trace_id": workflow_trace_id,
+                    "fornecedor_trace_id": fornecedor_trace_id,
+                    "fornecedor_cnpj": cnpj.value,
+                    "status": StatusEnum.ERROR.value,
+                    "event_name": EVENT_NAME,
+                    "input": cnpj.value,
+                    "output": None,
+                },
+                exc_info=True,
+            )
+            raise PersistUpdatedFornecedorWorkflowError(
+                f"Failed to persist updated fornecedor"
+            ) from e
+
     def _log_result(
         self,
         result: GetAndUpdateFornecedoresWorkflowResult,
@@ -192,6 +244,7 @@ class GetAndUpdateFornecedoresWorkflow:
         all_succeeded = (
             result.failed_built_fornecedores_count == 0
             and result.failed_updated_fornecedores_count == 0
+            and result.failed_persisted_fornecedores_count == 0
         )
 
         status = StatusEnum.SUCCESS.value if all_succeeded else StatusEnum.WARNING.value
@@ -209,6 +262,8 @@ class GetAndUpdateFornecedoresWorkflow:
                 "failed_built_fornecedores_count": result.failed_built_fornecedores_count,
                 "successfully_updated_fornecedores_count": result.successfully_updated_fornecedores_count,
                 "failed_updated_fornecedores_count": result.failed_updated_fornecedores_count,
+                "successfully_persisted_fornecedores_count": result.successfully_persisted_fornecedores_count,
+                "failed_persisted_fornecedores_count": result.failed_persisted_fornecedores_count,
             },
         )
 
@@ -223,11 +278,14 @@ class GetAndUpdateFornecedoresWorkflow:
         successfully_updated_fornecedores_count = 0
         failed_updated_fornecedores_count = 0
 
+        successfully_persisted_fornecedores_count = 0
+        failed_persisted_fornecedores_count = 0
+
         for fornecedor_to_update in fornecedores_to_update:
             fornecedor_trace_id = str(uuid.uuid4())
             try:
                 fornecedor = self.build_fornecedor(
-                    fornecedor_to_update, 
+                    fornecedor_to_update,
                     workflow_trace_id,
                     fornecedor_trace_id
                 )
@@ -238,13 +296,24 @@ class GetAndUpdateFornecedoresWorkflow:
 
             try:
                 self.update_fornecedor(
-                    fornecedor, 
+                    fornecedor,
                     workflow_trace_id,
                     fornecedor_trace_id
                 )
                 successfully_updated_fornecedores_count += 1
             except UpdateFornecedorWorkflowError:
                 failed_updated_fornecedores_count += 1
+                continue
+
+            try:
+                self.persist_updated_fornecedor(
+                    fornecedor,
+                    workflow_trace_id,
+                    fornecedor_trace_id
+                )
+                successfully_persisted_fornecedores_count += 1
+            except PersistUpdatedFornecedorWorkflowError:
+                failed_persisted_fornecedores_count += 1
                 continue
 
         result = GetAndUpdateFornecedoresWorkflowResult(
@@ -254,6 +323,8 @@ class GetAndUpdateFornecedoresWorkflow:
             failed_built_fornecedores_count=failed_built_fornecedores_count,
             successfully_updated_fornecedores_count=successfully_updated_fornecedores_count,
             failed_updated_fornecedores_count=failed_updated_fornecedores_count,
+            successfully_persisted_fornecedores_count=successfully_persisted_fornecedores_count,
+            failed_persisted_fornecedores_count=failed_persisted_fornecedores_count,
         )
         self._log_result(result)
         return result
