@@ -59,6 +59,7 @@ def build_workflow() -> GetAndUpdateFornecedoresWorkflow:
         get_fornecedores_to_update=SingleFornecedorMock(),
         build_fornecedor=container.adapter_provider.get_build_fornecedor_via_receita_api_adapter(),
         update_fornecedor=container.adapter_provider.get_update_fornecedor_via_protheus_api_adapter(),
+        persist_updated_fornecedor=container.adapter_provider.get_persist_updated_fornecedor_via_fornecedores_api_adapter(),
     )
 
 
