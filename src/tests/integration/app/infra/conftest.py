@@ -121,3 +121,15 @@ def atualizacao_fornecedor_data() -> dict:
         "created_at": "2026-05-12T11:43:55.670378-03:00",
         "updated_at": "2026-05-12T11:43:55.670378-03:00",
     }
+
+
+@pytest.fixture
+def url_atualizacoes_fornecedores_to_update_on_ppe() -> str:
+    """Path for FornecedoresAPIRequester.get_atualizacoes_fornecedores_pending_update_on_ppe."""
+    return "/v1/atualizacoes-fornecedores/to-update-on-ppe"
+
+
+@pytest.fixture
+def url_update_on_ppe_attempt() -> str:
+    """Path template for FornecedoresAPIRequester.register_update_on_ppe_attempt; format with id."""
+    return "/v1/atualizacoes-fornecedores/{id}/update-on-ppe-attempt"

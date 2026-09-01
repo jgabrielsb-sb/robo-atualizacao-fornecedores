@@ -39,4 +39,15 @@ class InfraProvider:
                 queue_name=settings.RABBIT_QUEUE_NAME,
             )
         )
-    
+
+    def get_ppe_queue_config(self) -> QueueConfig:
+        return QueueConfig(
+            host=settings.RABBIT_PPE_HOST,
+            port=str(settings.RABBIT_PPE_PORT),
+            virtual_host=settings.RABBIT_PPE_VIRTUAL_HOST,
+            username=settings.RABBIT_PPE_USER,
+            password=settings.RABBIT_PPE_PASSWORD,
+            connection_name="robo_atualizacao_fornecedores_ppe",
+            queue_name=settings.RABBIT_PPE_QUEUE_NAME,
+        )
+

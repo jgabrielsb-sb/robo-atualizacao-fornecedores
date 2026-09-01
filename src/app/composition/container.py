@@ -3,7 +3,10 @@ from dataclasses import dataclass
 from app.composition.adapter import AdapterProvider
 from app.composition.infra import InfraProvider
 
-from app.application.use_cases.workflows import GetAndUpdateFornecedoresWorkflow
+from app.application.use_cases.workflows import (
+    GetAndUpdateFornecedoresWorkflow,
+    SendUpdatedFornecedoresToPPEWorkflow,
+)
 from app.application.services.fornecedor_builder_service import FornecedorBuilderService
 
 @dataclass
@@ -25,4 +28,11 @@ class Container:
             build_fornecedor=self.adapter_provider.get_build_fornecedor_via_receita_api_adapter(),
             update_fornecedor=self.adapter_provider.get_update_fornecedor_via_protheus_api_adapter(),
             persist_updated_fornecedor=self.adapter_provider.get_persist_updated_fornecedor_via_fornecedores_api_adapter(),
+        )
+
+    def get_send_updated_fornecedores_to_ppe_workflow(self) -> SendUpdatedFornecedoresToPPEWorkflow:
+        return SendUpdatedFornecedoresToPPEWorkflow(
+            get_updated_fornecedores_to_send_to_ppe=self.adapter_provider.get_get_updated_fornecedores_to_send_to_ppe_via_fornecedores_api_adapter(),
+            send_updated_fornecedor_to_ppe=self.adapter_provider.get_send_updated_fornecedor_to_ppe_via_queue_adapter(),
+            send_updated_fornecedor_to_ppe_repository=self.adapter_provider.get_send_updated_fornecedor_to_ppe_repository_via_fornecedores_api_adapter(),
         )

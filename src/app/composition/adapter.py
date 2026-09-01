@@ -10,6 +10,9 @@ from app.infra.adapters import (
     BuildFornecedorViaReceitaAPI,
     GetAtividadeEconomicaDescriptionViaFornecedoresAPI,
     PersistUpdatedFornecedorViaFornecedoresAPI,
+    GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPI,
+    SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPI,
+    SendUpdatedFornecedorToPPEViaQueue,
 )
 
 from app.composition.infra import InfraProvider
@@ -54,6 +57,21 @@ class AdapterProvider:
     def get_persist_updated_fornecedor_via_fornecedores_api_adapter(self) -> PersistUpdatedFornecedorViaFornecedoresAPI:
         return PersistUpdatedFornecedorViaFornecedoresAPI(
             fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
+        )
+
+    def get_get_updated_fornecedores_to_send_to_ppe_via_fornecedores_api_adapter(self) -> GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPI:
+        return GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPI(
+            fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
+        )
+
+    def get_send_updated_fornecedor_to_ppe_repository_via_fornecedores_api_adapter(self) -> SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPI:
+        return SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPI(
+            fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
+        )
+
+    def get_send_updated_fornecedor_to_ppe_via_queue_adapter(self) -> SendUpdatedFornecedorToPPEViaQueue:
+        return SendUpdatedFornecedorToPPEViaQueue(
+            config=self.infra_provider.get_ppe_queue_config(),
         )
 
     def get_get_atividade_economica_description_via_fornecedores_api_adapter(self) -> GetAtividadeEconomicaDescriptionViaFornecedoresAPI:

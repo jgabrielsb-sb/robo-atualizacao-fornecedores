@@ -1,2 +1,2 @@
 from .exceptions import QueueException, QueueConnectionError
-from .rpc_queue_requester import RPCCartaoCNPJQueueRequester
+from .rpc_queue_requester import RPCCartaoCNPJQueueRequester, QueueConfig
