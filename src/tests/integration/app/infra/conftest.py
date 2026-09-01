@@ -100,3 +100,24 @@ def url_municipio_by_name() -> str:
 def url_fornecedores_to_update() -> str:
     """Path for FornecedoresAPIRequester.get_fornecedores_to_update."""
     return "/v1/fornecedores-to-update/all"
+
+
+@pytest.fixture
+def url_atualizacoes_fornecedores() -> str:
+    """Path for FornecedoresAPIRequester.create_atualizacao_fornecedor."""
+    return "/v1/atualizacoes-fornecedores/"
+
+
+@pytest.fixture
+def atualizacao_fornecedor_data() -> dict:
+    """Mirrors the real payload shape returned by POST /v1/atualizacoes-fornecedores/."""
+    return {
+        "id": 1,
+        "cnpj": "08626186000109",
+        "step_update_on_ppe_last_attempted_at": None,
+        "step_update_on_ppe_last_error_message": None,
+        "step_update_on_ppe_attempt_count": 0,
+        "step_update_on_ppe_status_id": 1,
+        "created_at": "2026-05-12T11:43:55.670378-03:00",
+        "updated_at": "2026-05-12T11:43:55.670378-03:00",
+    }
