@@ -1,9 +1,16 @@
+from datetime import datetime
+from typing import Optional
+
 import requests
 from http import HTTPStatus
 
 from pydantic import BaseModel
 from app.domain.value_objects import CodigoMunicipioIBGE, Municipio
-from app.infra.api_requester.exceptions import NotFoundError, APIRequesterException
+from app.infra.api_requester.exceptions import (
+    NotFoundError,
+    APIRequesterException,
+    UnprocessableEntityError,
+)
 
 class FornecedorToUpdate(BaseModel):
     LOJA: str
@@ -41,6 +48,16 @@ class Cnae(BaseModel):
     id: int
     code: str
     description: str
+
+class AtualizacaoFornecedor(BaseModel):
+    id: int
+    cnpj: str
+    step_update_on_ppe_last_attempted_at: Optional[datetime] = None
+    step_update_on_ppe_last_error_message: Optional[str] = None
+    step_update_on_ppe_attempt_count: int
+    step_update_on_ppe_status_id: int
+    created_at: datetime
+    updated_at: datetime
 
 class FornecedoresAPIRequester:
     def __init__(
@@ -124,6 +141,36 @@ class FornecedoresAPIRequester:
         else:
             raise APIRequesterException(
                 f"Failed to get fornecedor to update by CPF/CNPJ: {cpf_cnpj} \n"
+                f"Status Code: {status_code} \n"
+                f"Response text: {response.text} \n"
+                f"URL: {url}"
+            )
+
+    def create_atualizacao_fornecedor(self, cnpj: str) -> AtualizacaoFornecedor:
+        """
+        Method for registering a fornecedor update occurrence.
+        Returns the created AtualizacaoFornecedor record.
+
+        :raises UnprocessableEntityError: if the payload is rejected by the API.
+        :raises APIRequesterException: if the request fails.
+        :params return: AtualizacaoFornecedor
+        """
+        url = f"{self._base_url}/v1/atualizacoes-fornecedores/"
+        response = requests.post(url, json={"cnpj": cnpj})
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.CREATED:
+            data = response.json() # get json only after status_code == 201
+            return AtualizacaoFornecedor(**data)
+        elif status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
+            raise UnprocessableEntityError(
+                f"Failed to create atualizacao fornecedor for CNPJ: {cnpj} \n"
+                f"Status Code: {status_code} \n"
+                f"Response text: {response.text}"
+            )
+        else:
+            raise APIRequesterException(
+                f"Failed to create atualizacao fornecedor for CNPJ: {cnpj} \n"
                 f"Status Code: {status_code} \n"
                 f"Response text: {response.text} \n"
                 f"URL: {url}"

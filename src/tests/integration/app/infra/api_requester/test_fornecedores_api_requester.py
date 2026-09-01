@@ -8,8 +8,16 @@ import pytest
 from pytest_httpserver import HTTPServer
 
 from app.domain.value_objects import CodigoMunicipioIBGE, Municipio
-from app.infra.api_requester.exceptions import APIRequesterException, NotFoundError
-from app.infra.api_requester.fornecedores_api_requester import FornecedorToUpdate, FornecedoresAPIRequester
+from app.infra.api_requester.exceptions import (
+    APIRequesterException,
+    NotFoundError,
+    UnprocessableEntityError,
+)
+from app.infra.api_requester.fornecedores_api_requester import (
+    AtualizacaoFornecedor,
+    FornecedorToUpdate,
+    FornecedoresAPIRequester,
+)
 
 
 pytestmark = pytest.mark.integration_tests
@@ -218,6 +226,62 @@ class TestGetFornecedoresToUpdate:
         assert "ERROR" in str(e.value)
 
 
-    
+class TestCreateAtualizacaoFornecedor:
+    def test_should_return_atualizacao_fornecedor_when_response_is_201(
+        self,
+        httpserver: HTTPServer,
+        atualizacao_fornecedor_data: dict,
+        url_atualizacoes_fornecedores: str,
+    ):
+        httpserver.expect_request(
+            url_atualizacoes_fornecedores, method="POST"
+        ).respond_with_json(atualizacao_fornecedor_data, status=HTTPStatus.CREATED)
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        result = requester.create_atualizacao_fornecedor(atualizacao_fornecedor_data["cnpj"])
+
+        assert isinstance(result, AtualizacaoFornecedor)
+        assert result.id == atualizacao_fornecedor_data["id"]
+        assert result.cnpj == atualizacao_fornecedor_data["cnpj"]
+
+    def test_should_raise_unprocessable_entity_error_when_response_is_422(
+        self,
+        httpserver: HTTPServer,
+        url_atualizacoes_fornecedores: str,
+    ):
+        httpserver.expect_request(
+            url_atualizacoes_fornecedores, method="POST"
+        ).respond_with_json(
+            {"error": "unprocessable entity"},
+            status=HTTPStatus.UNPROCESSABLE_ENTITY,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(UnprocessableEntityError) as e:
+            requester.create_atualizacao_fornecedor("08626186000109")
+
+        assert "08626186000109" in str(e.value)
+
+    def test_should_raise_api_requester_exception_when_status_code_is_unexpected(
+        self,
+        httpserver: HTTPServer,
+        url_atualizacoes_fornecedores: str,
+    ):
+        httpserver.expect_request(
+            url_atualizacoes_fornecedores, method="POST"
+        ).respond_with_json(
+            {"error": "internal server error"},
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(APIRequesterException) as e:
+            requester.create_atualizacao_fornecedor("08626186000109")
+
+        assert "internal server error" in str(e.value)
+
 
 
