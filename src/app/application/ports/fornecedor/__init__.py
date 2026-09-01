@@ -4,6 +4,9 @@ from .updated_fornecedor_repository_port import (
     UpdatedFornecedorRepositoryPort,
     PersistUpdatedFornecedorResult,
 )
+from .get_updated_fornecedores_to_send_to_ppe_port import GetUpdatedFornecedoresToSendToPPEPort
+from .send_updated_fornecedor_to_ppe_port import SendUpdatedFornecedorToPPEPort
+from .send_updated_fornecedor_to_ppe_repository_port import SendUpdatedFornecedorToPPERepositoryPort
 from .build_fornecedor import (
     BuildFornecedorPort,
     GetCartaoCNPJPort,

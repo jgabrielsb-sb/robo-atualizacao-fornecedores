@@ -17,6 +17,18 @@ from .persist_updated_fornecedor import (
     PersistUpdatedFornecedorViaFornecedoresAPI,
     PersistUpdatedFornecedorViaFornecedoresAPIError,
 )
+from .get_updated_fornecedores_to_send_to_ppe import (
+    GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPI,
+    GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPIError,
+)
+from .send_updated_fornecedor_to_ppe_repository import (
+    SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPI,
+    SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPIError,
+)
+from .send_updated_fornecedor_to_ppe import (
+    SendUpdatedFornecedorToPPEViaQueue,
+    SendUpdatedFornecedorToPPEViaQueueError,
+)
 __all__ = [
     "GetOptSimplesNacionalWithSelenium",
     "GetCartaoCNPJViaQueueRequester",
@@ -29,4 +41,10 @@ __all__ = [
     "GetAtividadeEconomicaDescriptionViaFornecedoresAPI",
     "PersistUpdatedFornecedorViaFornecedoresAPI",
     "PersistUpdatedFornecedorViaFornecedoresAPIError",
+    "GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPI",
+    "GetUpdatedFornecedoresToSendToPPEViaFornecedoresAPIError",
+    "SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPI",
+    "SendUpdatedFornecedorToPPERepositoryViaFornecedoresAPIError",
+    "SendUpdatedFornecedorToPPEViaQueue",
+    "SendUpdatedFornecedorToPPEViaQueueError",
 ]
