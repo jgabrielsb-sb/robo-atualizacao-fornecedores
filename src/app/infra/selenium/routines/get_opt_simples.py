@@ -2,6 +2,8 @@ from botasaurus.browser import browser, Driver
 from botasaurus.user_agent import UserAgent
 from botasaurus.lang import Lang
 
+import time
+
 URL = "https://consopt.www8.receita.fazenda.gov.br/consultaoptantes"
 ARGUMENTS = [
     "--no-sandbox",
@@ -22,6 +24,7 @@ def scrape_opt_simples(
     cnpj: str,
 ):
     driver.get(URL)
+    time.sleep(5)
     driver.type("#Cnpj", cnpj)
     driver.click("button.h-captcha")
     driver.long_random_sleep()
