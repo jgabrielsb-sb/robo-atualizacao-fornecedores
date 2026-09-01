@@ -23,6 +23,7 @@ from app.infra.adapters.get_endereco.get_endereco_via_receita_api_requester impo
 from app.infra.adapters.get_opt_simples_nacional.get_opt_simples_nacional_with_selenium import GetOptSimplesNacionalWithSelenium
 from app.infra.adapters.municipio_lookup.municipio_lookup_via_fornecedores_api import MunicipioLookupViaFornecedoresAPI
 from app.infra.adapters.update_fornecedor.update_fornecedor_via_protheus_api.update_fornecedor_via_protheus_api import UpdateFornecedorViaProtheusAPI
+from app.infra.adapters.persist_updated_fornecedor.persist_updated_fornecedor_via_fornecedores_api import PersistUpdatedFornecedorViaFornecedoresAPI
 
 
 def _wrap_cnpj_as_fornecedor(cnpj: CNPJ) -> Fornecedor:
@@ -88,13 +89,25 @@ def real_update_fornecedor(infra: InfraProvider):
     )
 
 
+@pytest.fixture(scope="session")
+def real_persist_updated_fornecedor(infra: InfraProvider):
+    return PersistUpdatedFornecedorViaFornecedoresAPI(
+        fornecedores_api_requester=infra.get_fornecedores_api_requester(),
+    )
+
+
 @pytest.fixture
-def make_workflow(real_build_fornecedor: FornecedorBuilderService, real_update_fornecedor: UpdateFornecedorViaProtheusAPI):
+def make_workflow(
+    real_build_fornecedor: FornecedorBuilderService,
+    real_update_fornecedor: UpdateFornecedorViaProtheusAPI,
+    real_persist_updated_fornecedor: PersistUpdatedFornecedorViaFornecedoresAPI,
+):
     def _make(cnpjs: list[CNPJ]) -> GetAndUpdateFornecedoresWorkflow:
         return GetAndUpdateFornecedoresWorkflow(
             get_fornecedores_to_update=FakeGetFornecedoresToUpdatePort(cnpjs),
             build_fornecedor=real_build_fornecedor,
             update_fornecedor=real_update_fornecedor,
+            persist_updated_fornecedor=real_persist_updated_fornecedor,
         )
     return _make
 
