@@ -35,6 +35,13 @@ class Settings(BaseSettings):
     RABBIT_QUEUE_NAME: str
     RABBIT_CONNECTION_NAME: str
 
+    RABBIT_PPE_USER: str
+    RABBIT_PPE_PASSWORD: str
+    RABBIT_PPE_HOST: str
+    RABBIT_PPE_PORT: int
+    RABBIT_PPE_VIRTUAL_HOST: str
+    RABBIT_PPE_QUEUE_NAME: str
+
     RUN_CRON_TIME: str
     RUN_WITH_CRON: bool
 
