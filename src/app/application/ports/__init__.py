@@ -3,6 +3,8 @@ from .fornecedor import (
     BuildFornecedorPort,
     FornecedorRepositoryPort,
     UpdateFornecedorPort,
+    UpdatedFornecedorRepositoryPort,
+    PersistUpdatedFornecedorResult,
     GetCartaoCNPJPort,
     GetOptSimplesNacionalPort,
     GetEnderecoPort,
