@@ -13,6 +13,10 @@ from .get_endereco import GetEnderecoViaReceitaAPIRequester
 from .update_fornecedor import UpdateFornecedorViaProtheusAPI
 from .get_atividade_economica_description import GetAtividadeEconomicaDescriptionViaFornecedoresAPI
 from .build_fornecedor import BuildFornecedorViaReceitaAPI
+from .persist_updated_fornecedor import (
+    PersistUpdatedFornecedorViaFornecedoresAPI,
+    PersistUpdatedFornecedorViaFornecedoresAPIError,
+)
 __all__ = [
     "GetOptSimplesNacionalWithSelenium",
     "GetCartaoCNPJViaQueueRequester",
@@ -23,4 +27,6 @@ __all__ = [
     "UpdateFornecedorViaProtheusAPI",
     "MunicipioLookupViaFornecedoresAPI",
     "GetAtividadeEconomicaDescriptionViaFornecedoresAPI",
+    "PersistUpdatedFornecedorViaFornecedoresAPI",
+    "PersistUpdatedFornecedorViaFornecedoresAPIError",
 ]
