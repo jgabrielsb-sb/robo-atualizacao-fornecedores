@@ -9,6 +9,7 @@ from app.infra.adapters import (
     GetEnderecoViaReceitaAPIRequester,
     BuildFornecedorViaReceitaAPI,
     GetAtividadeEconomicaDescriptionViaFornecedoresAPI,
+    PersistUpdatedFornecedorViaFornecedoresAPI,
 )
 
 from app.composition.infra import InfraProvider
@@ -48,6 +49,11 @@ class AdapterProvider:
     def get_update_fornecedor_via_protheus_api_adapter(self) -> UpdateFornecedorViaProtheusAPI:
         return UpdateFornecedorViaProtheusAPI(
             protheus_api_requester=self.infra_provider.get_protheus_api_requester(),
+        )
+
+    def get_persist_updated_fornecedor_via_fornecedores_api_adapter(self) -> PersistUpdatedFornecedorViaFornecedoresAPI:
+        return PersistUpdatedFornecedorViaFornecedoresAPI(
+            fornecedores_api_requester=self.infra_provider.get_fornecedores_api_requester(),
         )
 
     def get_get_atividade_economica_description_via_fornecedores_api_adapter(self) -> GetAtividadeEconomicaDescriptionViaFornecedoresAPI:
