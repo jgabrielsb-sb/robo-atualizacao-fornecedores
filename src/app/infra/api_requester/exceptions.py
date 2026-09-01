@@ -13,6 +13,9 @@ class RouteNotFoundError(APIRequesterException):
 class NotFoundError(APIRequesterException):
     pass
 
+class ForbiddenError(APIRequesterException):
+    pass
+
 class TooManyRequestsError(APIRequesterException):
     pass
         

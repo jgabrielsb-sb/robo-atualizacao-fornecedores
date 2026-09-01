@@ -10,10 +10,12 @@ from pytest_httpserver import HTTPServer
 from app.domain.value_objects import CodigoMunicipioIBGE, Municipio
 from app.infra.api_requester.exceptions import (
     APIRequesterException,
+    ForbiddenError,
     NotFoundError,
     UnprocessableEntityError,
 )
 from app.infra.api_requester.fornecedores_api_requester import (
+    AttemptStatus,
     AtualizacaoFornecedor,
     FornecedorToUpdate,
     FornecedoresAPIRequester,
@@ -283,5 +285,175 @@ class TestCreateAtualizacaoFornecedor:
 
         assert "internal server error" in str(e.value)
 
+
+class TestGetAtualizacoesFornecedoresPendingUpdateOnPPE:
+    def test_should_return_list_when_there_are_atualizacoes_pending_and_response_is_200(
+        self,
+        httpserver: HTTPServer,
+        atualizacao_fornecedor_data: dict,
+        url_atualizacoes_fornecedores_to_update_on_ppe: str,
+    ):
+        httpserver.expect_request(
+            url_atualizacoes_fornecedores_to_update_on_ppe
+        ).respond_with_json([atualizacao_fornecedor_data])
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        result = requester.get_atualizacoes_fornecedores_pending_update_on_ppe()
+
+        assert len(result) == 1
+        assert isinstance(result[0], AtualizacaoFornecedor)
+        assert result[0].id == atualizacao_fornecedor_data["id"]
+        assert result[0].cnpj == atualizacao_fornecedor_data["cnpj"]
+
+    def test_should_return_empty_list_when_there_are_no_atualizacoes_pending(
+        self,
+        httpserver: HTTPServer,
+        url_atualizacoes_fornecedores_to_update_on_ppe: str,
+    ):
+        httpserver.expect_request(
+            url_atualizacoes_fornecedores_to_update_on_ppe
+        ).respond_with_json([])
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        result = requester.get_atualizacoes_fornecedores_pending_update_on_ppe()
+
+        assert result == []
+
+    def test_should_raise_api_requester_exception_when_status_code_is_not_200(
+        self,
+        httpserver: HTTPServer,
+        url_atualizacoes_fornecedores_to_update_on_ppe: str,
+    ):
+        httpserver.expect_request(
+            url_atualizacoes_fornecedores_to_update_on_ppe
+        ).respond_with_json(
+            {"error": "internal server error"},
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(APIRequesterException) as e:
+            requester.get_atualizacoes_fornecedores_pending_update_on_ppe()
+
+        assert "internal server error" in str(e.value)
+
+
+class TestRegisterUpdateOnPPEAttempt:
+    def test_should_return_atualizacao_fornecedor_when_response_is_200(
+        self,
+        httpserver: HTTPServer,
+        atualizacao_fornecedor_data: dict,
+        url_update_on_ppe_attempt: str,
+    ):
+        url = url_update_on_ppe_attempt.format(id=atualizacao_fornecedor_data["id"])
+        httpserver.expect_request(url, method="POST").respond_with_json(
+            atualizacao_fornecedor_data, status=HTTPStatus.OK
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        result = requester.register_update_on_ppe_attempt(
+            id=atualizacao_fornecedor_data["id"],
+            status=AttemptStatus.SUCCESSFULL,
+        )
+
+        assert isinstance(result, AtualizacaoFornecedor)
+        assert result.id == atualizacao_fornecedor_data["id"]
+
+    def test_should_raise_forbidden_error_when_response_is_403(
+        self,
+        httpserver: HTTPServer,
+        url_update_on_ppe_attempt: str,
+    ):
+        url = url_update_on_ppe_attempt.format(id=1)
+        httpserver.expect_request(url, method="POST").respond_with_json(
+            {"error": "stage already finished"},
+            status=HTTPStatus.FORBIDDEN,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(ForbiddenError) as e:
+            requester.register_update_on_ppe_attempt(id=1, status=AttemptStatus.ERROR, why_error="boom")
+
+        assert "1" in str(e.value)
+
+    def test_should_raise_not_found_error_when_response_is_404(
+        self,
+        httpserver: HTTPServer,
+        url_update_on_ppe_attempt: str,
+    ):
+        url = url_update_on_ppe_attempt.format(id=999)
+        httpserver.expect_request(url, method="POST").respond_with_json(
+            {"error": "not found"},
+            status=HTTPStatus.NOT_FOUND,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(NotFoundError) as e:
+            requester.register_update_on_ppe_attempt(id=999, status=AttemptStatus.SUCCESSFULL)
+
+        assert "999" in str(e.value)
+
+    def test_should_raise_unprocessable_entity_error_when_response_is_422(
+        self,
+        httpserver: HTTPServer,
+        url_update_on_ppe_attempt: str,
+    ):
+        url = url_update_on_ppe_attempt.format(id=1)
+        httpserver.expect_request(url, method="POST").respond_with_json(
+            {"error": "unprocessable entity"},
+            status=HTTPStatus.UNPROCESSABLE_ENTITY,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(UnprocessableEntityError):
+            requester.register_update_on_ppe_attempt(id=1, status=AttemptStatus.ERROR)
+
+    def test_should_raise_api_requester_exception_when_status_code_is_unexpected(
+        self,
+        httpserver: HTTPServer,
+        url_update_on_ppe_attempt: str,
+    ):
+        url = url_update_on_ppe_attempt.format(id=1)
+        httpserver.expect_request(url, method="POST").respond_with_json(
+            {"error": "internal server error"},
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        with pytest.raises(APIRequesterException) as e:
+            requester.register_update_on_ppe_attempt(id=1, status=AttemptStatus.SUCCESSFULL)
+
+        assert "internal server error" in str(e.value)
+
+    def test_should_send_why_error_in_payload_when_status_is_error(
+        self,
+        httpserver: HTTPServer,
+        atualizacao_fornecedor_data: dict,
+        url_update_on_ppe_attempt: str,
+    ):
+        url = url_update_on_ppe_attempt.format(id=atualizacao_fornecedor_data["id"])
+        httpserver.expect_request(
+            url,
+            method="POST",
+            json={"status": "ERROR", "why_error": "connection refused"},
+        ).respond_with_json(atualizacao_fornecedor_data, status=HTTPStatus.OK)
+
+        requester = FornecedoresAPIRequester(base_url=httpserver.url_for(""))
+
+        result = requester.register_update_on_ppe_attempt(
+            id=atualizacao_fornecedor_data["id"],
+            status=AttemptStatus.ERROR,
+            why_error="connection refused",
+        )
+
+        assert isinstance(result, AtualizacaoFornecedor)
 
 
