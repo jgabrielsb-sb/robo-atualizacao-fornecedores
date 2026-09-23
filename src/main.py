@@ -1,5 +1,5 @@
 import logging
-import app.logging.logger
+from datetime import datetime
 import schedule
 import time
 
@@ -19,7 +19,11 @@ logger = logging.getLogger("main")
 def run_workflow():
     use_case.run()
 
-schedule.every().day.at(settings.RUN_CRON_TIME).do(run_workflow)
+def run_monthly_workflow():
+    if datetime.now().day == 1:
+        run_workflow()
+
+schedule.every().day.at(settings.RUN_CRON_TIME).do(run_monthly_workflow)
 
 if __name__ == "__main__":
     try:
