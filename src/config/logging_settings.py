@@ -19,7 +19,10 @@ logging_settings = {
             "level": "INFO",
             "handlers": ["smtp"],
             "propagate": True,
-        }
+        },
+        "websocket": {
+            "level": "CRITICAL",
+        },
     },
     "formatters": {
         "simple": {

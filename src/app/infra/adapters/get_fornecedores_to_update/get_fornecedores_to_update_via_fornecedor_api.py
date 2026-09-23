@@ -142,7 +142,6 @@ class GetFornecedoresToUpdateViaFornecedoresAPI(GetFornecedoresToUpdatePort):
             try:
                 fornecedores.append(self._build_fornecedor(fornecedor_to_update, cnpj))
             except Exception as e:
-                print(fornecedor_to_update)
                 logger.error(
                     f"Failed to build fornecedor -- {cnpj.value} -- , skipping it",
                     exc_info=True,

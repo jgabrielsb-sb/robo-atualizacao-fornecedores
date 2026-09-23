@@ -77,12 +77,14 @@ class GetAndUpdateFornecedoresWorkflow:
         self,
         workflow_trace_id: str,
     ) -> list[Fornecedor]:
+        logger.info('Getting all the fornecedores that must be updated...')
+        
         trace_id = str(uuid.uuid4())
         EVENT_NAME = GET_FORNECEDORES_TO_UPDATE_EVENT_NAME
         try:
             fornecedores_to_update = self._get_fornecedores_to_update.get()
             logger.info(
-                "Successfully retrieved fornecedores to update",
+                f"Successfully retrieved fornecedores to update. There are {len(fornecedores_to_update)} fornecedores to update.",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -95,7 +97,7 @@ class GetAndUpdateFornecedoresWorkflow:
             return fornecedores_to_update
         except Exception as e:
             logger.error(
-                "Failed to retrieve fornecedores to update",
+                f"(TRACE_ID: {trace_id}) Failed to retrieve fornecedores to update",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -117,10 +119,11 @@ class GetAndUpdateFornecedoresWorkflow:
         trace_id = str(uuid.uuid4())
         EVENT_NAME = BUILD_FORNECEDOR_EVENT_NAME
         cnpj = fornecedor.identificacao.cnpj
+
         try:
             fornecedor_after_build = self._build_fornecedor.build(cnpj)
             logger.info(
-                "Successfully built fornecedor",
+                f"(TRACE_ID: {trace_id}) Successfully built fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} with updated informations",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -135,7 +138,7 @@ class GetAndUpdateFornecedoresWorkflow:
             return fornecedor_after_build
         except Exception as e:
             logger.error(
-                "Failed to build fornecedor",
+                f"(TRACE_ID: {trace_id}) Failed to build fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} with updated informations",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -163,7 +166,7 @@ class GetAndUpdateFornecedoresWorkflow:
         try:
             result = self._update_fornecedor.update(fornecedor)
             logger.info(
-                "Successfully updated fornecedor",
+                f"(TRACE_ID: {trace_id}) Successfully updated fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} on Protheus",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -177,7 +180,7 @@ class GetAndUpdateFornecedoresWorkflow:
             )
         except Exception as e:
             logger.error(
-                "Failed to update fornecedor",
+                f"(TRACE_ID: {trace_id}) Failed to update fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} on Protheus",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -206,7 +209,7 @@ class GetAndUpdateFornecedoresWorkflow:
         try:
             result = self._persist_updated_fornecedor.create(cnpj)
             logger.info(
-                "Successfully persisted updated fornecedor",
+                f"(TRACE_ID: {trace_id}) Successfully persisted updated fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} on Fornecedores API",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -220,7 +223,7 @@ class GetAndUpdateFornecedoresWorkflow:
             )
         except Exception as e:
             logger.error(
-                "Failed to persist updated fornecedor",
+                f"(TRACE_ID: {trace_id}) Failed to persist updated fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} on Fornecedores API",
                 extra={
                     "trace_id": trace_id,
                     "workflow_trace_id": workflow_trace_id,
@@ -234,7 +237,7 @@ class GetAndUpdateFornecedoresWorkflow:
                 exc_info=True,
             )
             raise PersistUpdatedFornecedorWorkflowError(
-                f"Failed to persist updated fornecedor"
+                f"Failed to persist updated fornecedor with CNPJ {fornecedor.identificacao.cnpj.value} on Fornecedores API"
             ) from e
 
     def _log_result(
@@ -268,6 +271,8 @@ class GetAndUpdateFornecedoresWorkflow:
         )
 
     def run(self) -> GetAndUpdateFornecedoresWorkflowResult:
+        logger.info("Running the GetAndUpdateFornecedoresWorkflow")
+
         workflow_trace_id = str(uuid.uuid4())
 
         fornecedores_to_update = self.get_fornecedores_to_update(workflow_trace_id)
@@ -281,7 +286,8 @@ class GetAndUpdateFornecedoresWorkflow:
         successfully_persisted_fornecedores_count = 0
         failed_persisted_fornecedores_count = 0
 
-        for fornecedor_to_update in fornecedores_to_update:
+        for index, fornecedor_to_update in enumerate(fornecedores_to_update):
+            logger.info(f"Updating the fornecedor {index + 1} of {len(fornecedores_to_update)} (CNPJ: {fornecedor_to_update.identificacao.cnpj.value})")
             fornecedor_trace_id = str(uuid.uuid4())
             try:
                 fornecedor = self.build_fornecedor(
