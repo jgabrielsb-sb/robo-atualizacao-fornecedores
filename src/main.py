@@ -23,7 +23,17 @@ def run_monthly_workflow():
     if datetime.now().day == 1:
         run_workflow()
 
-schedule.every().day.at(settings.RUN_CRON_TIME).do(run_monthly_workflow)
+def run_weekly_workflow():
+    if datetime.now().weekday() == 0:  # Monday
+        run_workflow()
+
+RUN_EVERY_MONTH = False
+RUN_EVERY_WEEK = True
+
+if RUN_EVERY_MONTH:
+    schedule.every().day.at(settings.RUN_CRON_TIME).do(run_monthly_workflow)
+if RUN_EVERY_WEEK:
+    schedule.every().day.at(settings.RUN_CRON_TIME).do(run_weekly_workflow)
 
 if __name__ == "__main__":
     try:

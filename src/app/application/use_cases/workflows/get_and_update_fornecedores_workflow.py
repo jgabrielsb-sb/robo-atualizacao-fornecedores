@@ -275,7 +275,7 @@ class GetAndUpdateFornecedoresWorkflow:
 
         workflow_trace_id = str(uuid.uuid4())
 
-        fornecedores_to_update = self.get_fornecedores_to_update(workflow_trace_id)
+        fornecedores_to_update = self.get_fornecedores_to_update(workflow_trace_id)[:100]
 
         successfully_built_fornecedores_count = 0
         failed_built_fornecedores_count = 0
