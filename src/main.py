@@ -43,6 +43,7 @@ if __name__ == "__main__":
                 schedule.run_pending()
                 time.sleep(1)
         else:
+            print('hello')
             print("Running workflow without cron")
             run_workflow()
     except Exception as e:
