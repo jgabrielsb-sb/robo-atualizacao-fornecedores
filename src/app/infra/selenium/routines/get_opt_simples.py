@@ -12,6 +12,18 @@ ARGUMENTS = [
 ]
 
 
+class GetOptSimplesError(Exception):
+    pass
+
+
+class CNPJInvalidoError(GetOptSimplesError):
+    pass
+
+
+class ResultadoNaoEncontradoError(GetOptSimplesError):
+    pass
+
+
 @browser(
     user_agent=UserAgent.HASHED,
     lang=Lang.English,
@@ -33,20 +45,28 @@ def scrape_opt_simples(
     return html
 
 
-def is_optante_simples(cnpj: str, html: str) -> bool | None:
+def is_optante_simples(cnpj: str, html: str) -> bool:
     STR_OPTANTE_SIMPLES = "Optante pelo Simples Nacional"
     STR_NAO_OPTANTE_SIMPLES = "NÃO optante pelo Simples Nacional"
-    STR_CNPJ_INVALIDO = "CNPJ inválido"
+    # O input #Cnpj sempre carrega data-val-length="CNPJ inválido." como
+    # atributo; só consideramos inválido quando a mensagem aparece como
+    # texto renderizado (ex.: <span class="field-validation-error">CNPJ inválido.</span>)
+    STR_CNPJ_INVALIDO = ">CNPJ inválido"
 
     if STR_NAO_OPTANTE_SIMPLES in html:
         return False
     if STR_OPTANTE_SIMPLES in html:
         return True
     if STR_CNPJ_INVALIDO in html:
-        raise ValueError(f"CNPJ inválido: {cnpj}")
-    return None
+        raise CNPJInvalidoError(f"CNPJ inválido: {cnpj}")
+    # Nenhum resultado na página: provavelmente o hCaptcha não foi resolvido
+    # ou a consulta foi bloqueada pela Receita.
+    raise ResultadoNaoEncontradoError(
+        f"Resultado da consulta de opção pelo Simples Nacional não encontrado "
+        f"na página para o CNPJ {cnpj} (captcha não resolvido ou consulta bloqueada?)"
+    )
 
 
-def get_opt_simples(cnpj: str) -> bool | None:
+def get_opt_simples(cnpj: str) -> bool:
     html = scrape_opt_simples(cnpj)
     return is_optante_simples(cnpj, html)
