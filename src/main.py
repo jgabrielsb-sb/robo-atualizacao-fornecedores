@@ -3,6 +3,7 @@ from datetime import datetime
 import schedule
 import time
 
+import app.logging.logger
 from app.composition.container import Container
 from config.settings import settings
 
@@ -42,7 +43,7 @@ if __name__ == "__main__":
                 schedule.run_pending()
                 time.sleep(1)
         else:
-            logger.info("Running workflow without cron")
+            print("Running workflow without cron")
             run_workflow()
     except Exception as e:
         logger.critical("CRITICAL System Error", exc_info=True)
