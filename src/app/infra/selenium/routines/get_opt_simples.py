@@ -11,7 +11,6 @@ ARGUMENTS = [
     "--disable-blink-features=AutomationControlled",
 ]
 
-
 class GetOptSimplesError(Exception):
     pass
 
@@ -30,6 +29,7 @@ class ResultadoNaoEncontradoError(GetOptSimplesError):
     add_arguments=ARGUMENTS,
     output=None,
     wait_for_complete_page_load=True,
+    headless=True,
 )
 def scrape_opt_simples(
     driver: Driver,
