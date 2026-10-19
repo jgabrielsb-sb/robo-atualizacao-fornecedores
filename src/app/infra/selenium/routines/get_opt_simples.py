@@ -46,6 +46,7 @@ def scrape_opt_simples(
 
 
 def is_optante_simples(cnpj: str, html: str) -> bool:
+    time.sleep(10)
     STR_OPTANTE_SIMPLES = "Optante pelo Simples Nacional"
     STR_NAO_OPTANTE_SIMPLES = "NÃO optante pelo Simples Nacional"
     # O input #Cnpj sempre carrega data-val-length="CNPJ inválido." como
